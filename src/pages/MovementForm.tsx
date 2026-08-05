@@ -106,6 +106,10 @@ export const MovementForm = () => {
               className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900
               focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
               required
+              value={formData.movementSummary}
+              onChange={(e) =>
+                setFormData({ ...formData, movementSummary: e.target.value })
+              }
             ></textarea>
           </div>
 
@@ -123,6 +127,13 @@ export const MovementForm = () => {
               className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900
               focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
               required
+              value={formData.movementDescription}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  movementDescription: e.target.value,
+                })
+              }
             ></textarea>
           </div>
 
@@ -135,6 +146,13 @@ export const MovementForm = () => {
                 <select
                   id="execution"
                   name="movementExecution"
+                  value={formData.movementExecution}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      movementExecution: e.target.value,
+                    })
+                  }
                   className="w-auto rounded-lg border border-gray-300 
                       bg-white px-4 py-3 text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none
                       focus:ring-2 focus:ring-blue-200"
@@ -156,7 +174,25 @@ export const MovementForm = () => {
                 <input
                   type="checkbox"
                   name="movementDemand"
-                  value="strength"
+                  value="Strength"
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    const isChecked = e.target.checked;
+
+                    if (isChecked) {
+                      setFormData({
+                        ...formData,
+                        movementDemand: [...formData.movementDemand, value],
+                      });
+                    } else {
+                      setFormData({
+                        ...formData,
+                        movementDemand: formData.movementDemand.filter(
+                          (demand) => demand !== value,
+                        ),
+                      });
+                    }
+                  }}
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
                 <span className="text-gray-700 text-sm">Strength</span>
@@ -167,6 +203,24 @@ export const MovementForm = () => {
                   type="checkbox"
                   name="movementDemand"
                   value="Power"
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    const isChecked = e.target.value;
+
+                    if (isChecked) {
+                      setFormData({
+                        ...formData,
+                        movementDemand: [...formData.movementDemand, value],
+                      });
+                    } else {
+                      setFormData({
+                        ...formData,
+                        movementDemand: formData.movementDemand.filter(
+                          (demand) => demand !== value,
+                        ),
+                      });
+                    }
+                  }}
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
                 <span className="text-gray-700 text-sm">Power</span>
