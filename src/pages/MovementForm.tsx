@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
 
 type MovementFormData = {
   movementName: string;
@@ -36,8 +36,17 @@ export const MovementForm = () => {
   // const movementData = {};
 
   // React.FormEvent<HTMLFormElement> tells typescript this event came from submitting an HTML form.
-  async function createMovement(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  // submitting, on change, on click
+
+  // GOAL of this: store/persist data for the entire component form + function
+  // when: when someone presses the button. encapsulate this logic into a function, to be used at a certain time
+  // what, what is this function doing?: is this talking outside of my frontend?
+  // try, catch, async await
+  // outside function, async function, fetch, await, try catch, error handling, response.ok, response.json(), setState
+  // does this need state?
+
+  async function createMovement(e: SubmitEvent) {
+    e.preventDefault();
 
     console.log("formData =", formData);
 
@@ -53,10 +62,28 @@ export const MovementForm = () => {
       }
 
       const result = await response.json();
-
       console.log("server response =", result);
     } catch (err) {
       console.log(err);
+    }
+  }
+
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value;
+    const isChecked = e.target.checked;
+
+    if (isChecked) {
+      setFormData({
+        ...formData,
+        movementDemand: [...formData.movementDemand, value],
+      });
+    } else {
+      setFormData({
+        ...formData,
+        movementDemand: formData.movementDemand.filter(
+          (demand) => demand !== value,
+        ),
+      });
     }
   }
 
@@ -65,7 +92,7 @@ export const MovementForm = () => {
       <form
         id="movement-form"
         className="bg-white rounded-xl shadow-lg p-8"
-        onSubmit={createMovement}
+        onSubmit={(e) => createMovement(e as unknown as SubmitEvent)}
       >
         <section>
           <h2 className="text-4xl font-bold text-blue-600 text-center mb-8">
@@ -175,24 +202,7 @@ export const MovementForm = () => {
                   type="checkbox"
                   name="movementDemand"
                   value="Strength"
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    const isChecked = e.target.checked;
-
-                    if (isChecked) {
-                      setFormData({
-                        ...formData,
-                        movementDemand: [...formData.movementDemand, value],
-                      });
-                    } else {
-                      setFormData({
-                        ...formData,
-                        movementDemand: formData.movementDemand.filter(
-                          (demand) => demand !== value,
-                        ),
-                      });
-                    }
-                  }}
+                  onChange={(e) => handleInputChange(e)}
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
                 <span className="text-gray-700 text-sm">Strength</span>
@@ -203,24 +213,7 @@ export const MovementForm = () => {
                   type="checkbox"
                   name="movementDemand"
                   value="Power"
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    const isChecked = e.target.value;
-
-                    if (isChecked) {
-                      setFormData({
-                        ...formData,
-                        movementDemand: [...formData.movementDemand, value],
-                      });
-                    } else {
-                      setFormData({
-                        ...formData,
-                        movementDemand: formData.movementDemand.filter(
-                          (demand) => demand !== value,
-                        ),
-                      });
-                    }
-                  }}
+                  onChange={(e) => handleInputChange(e)}
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
                 <span className="text-gray-700 text-sm">Power</span>
@@ -231,6 +224,7 @@ export const MovementForm = () => {
                   type="checkbox"
                   name="movementDemand"
                   value="Balance"
+                  onChange={(e) => handleInputChange(e)}
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
                 <span className="text-gray-700 text-sm">Balance</span>
@@ -241,6 +235,7 @@ export const MovementForm = () => {
                   type="checkbox"
                   name="movementDemand"
                   value="Coordination"
+                  onChange={(e) => handleInputChange(e)}
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
                 <span className="text-gray-700 text-sm">Coordination</span>
@@ -251,6 +246,7 @@ export const MovementForm = () => {
                   type="checkbox"
                   name="movementDemand"
                   value="Precision"
+                  onChange={(e) => handleInputChange(e)}
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
                 <span className="text-gray-700 text-sm">Precision</span>
