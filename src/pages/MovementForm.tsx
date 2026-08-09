@@ -33,6 +33,8 @@ export const MovementForm = () => {
     movementExtraNotes: "",
   });
 
+  const [tagInput, setTagInput] = useState("");
+
   // const movementData = {};
 
   // React.FormEvent<HTMLFormElement> tells typescript this event came from submitting an HTML form.
@@ -48,13 +50,17 @@ export const MovementForm = () => {
   async function createMovement(e: SubmitEvent) {
     e.preventDefault();
 
-    console.log("formData =", formData);
+    const tagsArray = tagInput.split(",").map((tag) => tag.trim());
+
+    const movementData = { ...formData, movementTags: tagsArray };
+
+    console.log("movementData =", movementData);
 
     try {
       const response = await fetch("http://localhost:8787/movements", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(movementData),
       });
 
       if (!response.ok) {
@@ -68,21 +74,21 @@ export const MovementForm = () => {
     }
   }
 
-  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const value = e.target.value;
-    const isChecked = e.target.checked;
+  type MultiSelectField = "movementDemand" | "movementTerrain";
 
-    if (isChecked) {
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const { value, checked } = e.target;
+    const name = e.target.name as MultiSelectField;
+
+    if (checked) {
       setFormData({
         ...formData,
-        movementDemand: [...formData.movementDemand, value],
+        [name]: [...formData[name], value],
       });
     } else {
       setFormData({
         ...formData,
-        movementDemand: formData.movementDemand.filter(
-          (demand) => demand !== value,
-        ),
+        [name]: formData[name].filter((item) => item !== value),
       });
     }
   }
@@ -264,6 +270,7 @@ export const MovementForm = () => {
                   type="checkbox"
                   name="movementTerrain"
                   value="slab"
+                  onChange={(e) => handleInputChange(e)}
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
                 <span className="text-gray-700 text-sm">Slab</span>
@@ -274,6 +281,7 @@ export const MovementForm = () => {
                   type="checkbox"
                   name="movementTerrain"
                   value="vertical"
+                  onChange={(e) => handleInputChange(e)}
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
                 <span className="text-gray-700 text-sm">Vertical</span>
@@ -284,6 +292,7 @@ export const MovementForm = () => {
                   type="checkbox"
                   name="movementTerrain"
                   value="overhang"
+                  onChange={(e) => handleInputChange(e)}
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
                 <span className="text-gray-700 text-sm">Overhang</span>
@@ -294,6 +303,7 @@ export const MovementForm = () => {
                   type="checkbox"
                   name="movementTerrain"
                   value="roof"
+                  onChange={(e) => handleInputChange(e)}
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
                 <span className="text-gray-700 text-sm">Roof</span>
@@ -304,6 +314,7 @@ export const MovementForm = () => {
                   type="checkbox"
                   name="movementTerrain"
                   value="dihedral"
+                  onChange={(e) => handleInputChange(e)}
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
                 <span className="text-gray-700 text-sm">Dihedral</span>
@@ -314,6 +325,7 @@ export const MovementForm = () => {
                   type="checkbox"
                   name="movementTerrain"
                   value="arete"
+                  onChange={(e) => handleInputChange(e)}
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
                 <span className="text-gray-700 text-sm">Arete</span>
@@ -330,6 +342,10 @@ export const MovementForm = () => {
                 <select
                   id="status"
                   name="movementStatus"
+                  value={formData.movementStatus}
+                  onChange={(e) =>
+                    setFormData({ ...formData, movementStatus: e.target.value })
+                  }
                   className="w-auto rounded-lg border border-gray-300 
                       bg-white px-4 py-3 text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none
                       focus:ring-2 focus:ring-blue-200"
@@ -355,6 +371,13 @@ export const MovementForm = () => {
               <textarea
                 id="when-to-use"
                 name="movementWhenToUse"
+                value={formData.movementWhenToUse}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    movementWhenToUse: e.target.value,
+                  })
+                }
                 rows={4}
               ></textarea>
             </div>
@@ -364,6 +387,13 @@ export const MovementForm = () => {
               <textarea
                 id="how-to-perform"
                 name="movementHowToPerform"
+                value={formData.movementHowToPerform}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    movementHowToPerform: e.target.value,
+                  })
+                }
                 rows={6}
               ></textarea>
             </div>
@@ -373,6 +403,13 @@ export const MovementForm = () => {
               <textarea
                 id="common-mistakes"
                 name="movementCommonMistakes"
+                value={formData.movementCommonMistakes}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    movementCommonMistakes: e.target.value,
+                  })
+                }
                 rows={5}
               ></textarea>
             </div>
@@ -388,6 +425,8 @@ export const MovementForm = () => {
                 name="movementTags"
                 type="text"
                 placeholder="Example: balance, overhang, hip rotation"
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
               />
             </div>
 
@@ -402,6 +441,13 @@ export const MovementForm = () => {
               <textarea
                 id="research-notes"
                 name="movementResearchNotes"
+                value={formData.movementResearchNotes}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    movementResearchNotes: e.target.value,
+                  })
+                }
                 rows={5}
               ></textarea>
             </div>
@@ -411,6 +457,13 @@ export const MovementForm = () => {
               <textarea
                 id="extra-notes"
                 name="movementExtraNotes"
+                value={formData.movementExtraNotes}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    movementExtraNotes: e.target.value,
+                  })
+                }
                 rows={5}
               ></textarea>
             </div>
