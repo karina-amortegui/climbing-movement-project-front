@@ -59,11 +59,14 @@ export const MovementForm = () => {
     console.log("movementData =", movementData);
 
     try {
-      const response = await fetch("http://localhost:8787/movements", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(movementData),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/movements`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(movementData),
+        },
+      );
 
       if (!response.ok) {
         throw new Error("Failed to create movement");
