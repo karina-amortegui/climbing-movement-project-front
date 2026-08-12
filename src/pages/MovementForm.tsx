@@ -16,22 +16,24 @@ type MovementFormData = {
   movementExtraNotes: string;
 };
 
+const emptyForm = {
+  movementName: "",
+  movementSummary: "",
+  movementDescription: "",
+  movementExecution: "",
+  movementDemand: [],
+  movementTerrain: [],
+  movementStatus: "",
+  movementWhenToUse: "",
+  movementHowToPerform: "",
+  movementCommonMistakes: "",
+  movementTags: [],
+  movementResearchNotes: "",
+  movementExtraNotes: "",
+};
+
 export const MovementForm = () => {
-  const [formData, setFormData] = useState<MovementFormData>({
-    movementName: "",
-    movementSummary: "",
-    movementDescription: "",
-    movementExecution: "",
-    movementDemand: [],
-    movementTerrain: [],
-    movementStatus: "",
-    movementWhenToUse: "",
-    movementHowToPerform: "",
-    movementCommonMistakes: "",
-    movementTags: [],
-    movementResearchNotes: "",
-    movementExtraNotes: "",
-  });
+  const [formData, setFormData] = useState<MovementFormData>(emptyForm);
 
   const [tagInput, setTagInput] = useState("");
 
@@ -69,6 +71,8 @@ export const MovementForm = () => {
 
       const result = await response.json();
       console.log("server response =", result);
+
+      setFormData(emptyForm);
     } catch (err) {
       console.log(err);
     }
@@ -207,7 +211,7 @@ export const MovementForm = () => {
                 <input
                   type="checkbox"
                   name="movementDemand"
-                  value="Strength"
+                  value="strength"
                   onChange={(e) => handleInputChange(e)}
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
@@ -218,7 +222,7 @@ export const MovementForm = () => {
                 <input
                   type="checkbox"
                   name="movementDemand"
-                  value="Power"
+                  value="power"
                   onChange={(e) => handleInputChange(e)}
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
@@ -229,7 +233,7 @@ export const MovementForm = () => {
                 <input
                   type="checkbox"
                   name="movementDemand"
-                  value="Balance"
+                  value="balance"
                   onChange={(e) => handleInputChange(e)}
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
@@ -240,7 +244,7 @@ export const MovementForm = () => {
                 <input
                   type="checkbox"
                   name="movementDemand"
-                  value="Coordination"
+                  value="coordination"
                   onChange={(e) => handleInputChange(e)}
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
@@ -251,7 +255,7 @@ export const MovementForm = () => {
                 <input
                   type="checkbox"
                   name="movementDemand"
-                  value="Precision"
+                  value="precision"
                   onChange={(e) => handleInputChange(e)}
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
