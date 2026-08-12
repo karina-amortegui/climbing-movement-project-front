@@ -68,6 +68,8 @@ export const MovementForm = () => {
         },
       );
 
+      console.log("successfully created a movement");
+
       if (!response.ok) {
         throw new Error("Failed to create movement");
       }
