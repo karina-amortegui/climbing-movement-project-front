@@ -37,6 +37,8 @@ export const MovementForm = () => {
 
   const [tagInput, setTagInput] = useState("");
 
+  const[statusMessage, setStatusMessage] = useState("");
+  
   // const movementData = {};
 
   // React.FormEvent<HTMLFormElement> tells typescript this event came from submitting an HTML form.
@@ -68,18 +70,20 @@ export const MovementForm = () => {
         },
       );
 
-      console.log("successfully created a movement");
-
       if (!response.ok) {
-        throw new Error("Failed to create movement");
+        throw new Error("Server response unsuccessful");
       }
 
       const result = await response.json();
       console.log("server response =", result);
 
       setFormData(emptyForm);
+      setTagInput("");
+      setStatusMessage("Movement created successfully!");
+
     } catch (err) {
       console.log(err);
+       setStatusMessage("Failed to create movement.");
     }
   }
 
@@ -218,6 +222,7 @@ export const MovementForm = () => {
                   name="movementDemand"
                   value="strength"
                   onChange={(e) => handleInputChange(e)}
+                  checked={formData.movementDemand.includes("strength")}
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
                 <span className="text-gray-700 text-sm">Strength</span>
@@ -229,6 +234,7 @@ export const MovementForm = () => {
                   name="movementDemand"
                   value="power"
                   onChange={(e) => handleInputChange(e)}
+                  checked={formData.movementDemand.includes("power")}
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
                 <span className="text-gray-700 text-sm">Power</span>
@@ -240,6 +246,7 @@ export const MovementForm = () => {
                   name="movementDemand"
                   value="balance"
                   onChange={(e) => handleInputChange(e)}
+                  checked={formData.movementDemand.includes("balance")}
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
                 <span className="text-gray-700 text-sm">Balance</span>
@@ -251,6 +258,7 @@ export const MovementForm = () => {
                   name="movementDemand"
                   value="coordination"
                   onChange={(e) => handleInputChange(e)}
+                  checked={formData.movementDemand.includes("coordination")}
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
                 <span className="text-gray-700 text-sm">Coordination</span>
@@ -262,6 +270,7 @@ export const MovementForm = () => {
                   name="movementDemand"
                   value="precision"
                   onChange={(e) => handleInputChange(e)}
+                  checked={formData.movementDemand.includes("precision")}
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
                 <span className="text-gray-700 text-sm">Precision</span>
@@ -280,6 +289,7 @@ export const MovementForm = () => {
                   name="movementTerrain"
                   value="slab"
                   onChange={(e) => handleInputChange(e)}
+                  checked={formData.movementTerrain.includes("slab")}
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
                 <span className="text-gray-700 text-sm">Slab</span>
@@ -291,6 +301,7 @@ export const MovementForm = () => {
                   name="movementTerrain"
                   value="vertical"
                   onChange={(e) => handleInputChange(e)}
+                  checked={formData.movementTerrain.includes("vertical")}
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
                 <span className="text-gray-700 text-sm">Vertical</span>
@@ -302,6 +313,7 @@ export const MovementForm = () => {
                   name="movementTerrain"
                   value="overhang"
                   onChange={(e) => handleInputChange(e)}
+                  checked={formData.movementTerrain.includes("overhang")}
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
                 <span className="text-gray-700 text-sm">Overhang</span>
@@ -313,6 +325,7 @@ export const MovementForm = () => {
                   name="movementTerrain"
                   value="roof"
                   onChange={(e) => handleInputChange(e)}
+                  checked={formData.movementTerrain.includes("roof")}
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
                 <span className="text-gray-700 text-sm">Roof</span>
@@ -324,6 +337,7 @@ export const MovementForm = () => {
                   name="movementTerrain"
                   value="dihedral"
                   onChange={(e) => handleInputChange(e)}
+                  checked={formData.movementTerrain.includes("dihedral")}
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
                 <span className="text-gray-700 text-sm">Dihedral</span>
@@ -335,6 +349,7 @@ export const MovementForm = () => {
                   name="movementTerrain"
                   value="arete"
                   onChange={(e) => handleInputChange(e)}
+                  checked={formData.movementTerrain.includes("arete")}
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
                 <span className="text-gray-700 text-sm">Arete</span>
@@ -352,9 +367,7 @@ export const MovementForm = () => {
                   id="status"
                   name="movementStatus"
                   value={formData.movementStatus}
-                  onChange={(e) =>
-                    setFormData({ ...formData, movementStatus: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, movementStatus: e.target.value })}
                   className="w-auto rounded-lg border border-gray-300 
                       bg-white px-4 py-3 text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none
                       focus:ring-2 focus:ring-blue-200"
@@ -381,12 +394,7 @@ export const MovementForm = () => {
                 id="when-to-use"
                 name="movementWhenToUse"
                 value={formData.movementWhenToUse}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    movementWhenToUse: e.target.value,
-                  })
-                }
+                onChange={(e) => setFormData({ ...formData, movementWhenToUse: e.target.value, })}
                 rows={4}
               ></textarea>
             </div>
@@ -397,12 +405,7 @@ export const MovementForm = () => {
                 id="how-to-perform"
                 name="movementHowToPerform"
                 value={formData.movementHowToPerform}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    movementHowToPerform: e.target.value,
-                  })
-                }
+                onChange={(e) => setFormData({ ...formData, movementHowToPerform: e.target.value, })}
                 rows={6}
               ></textarea>
             </div>
@@ -413,12 +416,7 @@ export const MovementForm = () => {
                 id="common-mistakes"
                 name="movementCommonMistakes"
                 value={formData.movementCommonMistakes}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    movementCommonMistakes: e.target.value,
-                  })
-                }
+                onChange={(e) => setFormData({ ...formData, movementCommonMistakes: e.target.value, })}
                 rows={5}
               ></textarea>
             </div>
@@ -451,12 +449,7 @@ export const MovementForm = () => {
                 id="research-notes"
                 name="movementResearchNotes"
                 value={formData.movementResearchNotes}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    movementResearchNotes: e.target.value,
-                  })
-                }
+                onChange={(e) => setFormData({ ...formData, movementResearchNotes: e.target.value, })}
                 rows={5}
               ></textarea>
             </div>
@@ -467,21 +460,15 @@ export const MovementForm = () => {
                 id="extra-notes"
                 name="movementExtraNotes"
                 value={formData.movementExtraNotes}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    movementExtraNotes: e.target.value,
-                  })
-                }
+                onChange={(e) => setFormData({ ...formData, movementExtraNotes: e.target.value, })}
                 rows={5}
               ></textarea>
             </div>
           </section>
         </div>
 
-        <button id="submitButton" type="submit">
-          Create Movement
-        </button>
+        <button id="submitButton" type="submit">Create Movement</button>
+        {statusMessage && <p>{statusMessage}</p>}
       </form>
     </div>
   );
