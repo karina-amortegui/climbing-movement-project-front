@@ -1,10 +1,12 @@
 import "./App.css";
 import { MovementForm } from "./pages/MovementForm";
+import { MovementList } from "./pages/MovementList";
 
 function App() {
   return (
     <>
       <MovementForm />
+      <MovementList />
     </>
   );
 }

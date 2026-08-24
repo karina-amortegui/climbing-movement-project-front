@@ -1,3 +1,4 @@
+// component job: create a movement
 import { useState } from "react";
 
 type MovementFormData = {
