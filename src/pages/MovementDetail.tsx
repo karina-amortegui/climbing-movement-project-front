@@ -18,37 +18,37 @@ type Movement = {
 };
 
 export const MovementDetail = () => {
-  const [movement, setMovement] = useState<Movement|null>(null);
+  const [movement, setMovement] = useState<Movement | null>(null);
   const [statusMessage, setStatusMessage] = useState("");
-    async function fetchMovement() {
-      
-      try {
-        const response = await fetch("http://localhost:8787/movements/6a848788f29e21d2cae475ce");
-        
-        if (!response.ok) {
-          throw new Error("Server response unsuccessful")
-        }
-        const data = await response.json();
-        setMovement(data.data);
+  async function fetchMovement() {
+    try {
+      const response = await fetch(
+        "http://localhost:8787/movements/6a8d9d8b96b04419c0902c3b",
+      );
 
-      } catch (err) {
-        console.log(err);
-        setStatusMessage("Failed to render movement")
+      if (!response.ok) {
+        throw new Error("Server response unsuccessful");
+      }
+      const data = await response.json();
+      setMovement(data.data);
+    } catch (err) {
+      console.log(err);
+      setStatusMessage("Failed to render movement.");
     }
   }
 
-  useEffect (() => {
+  useEffect(() => {
     fetchMovement();
   }, []);
-  
+
   if (statusMessage) {
-    return <p>{statusMessage}</p>
+    return <p>{statusMessage}</p>;
   }
 
   if (movement === null) {
     return <p>Loading movement...</p>;
-  }  
-  
+  }
+
   return (
     <div>
       <h1>{movement.movementName}</h1>
@@ -62,6 +62,10 @@ export const MovementDetail = () => {
       <p><strong>How to perform:</strong> {movement.movementHowToPerform}</p>
       <p><strong>Common mistakes:</strong> {movement.movementCommonMistakes}</p>
       <p><strong>Tags:</strong> {movement.movementTags.join(", ")}</p>
+    
+      <div>
+        <button>Edit</button>
+      </div>
     </div>
   );
 };
