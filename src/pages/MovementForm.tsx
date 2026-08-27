@@ -1,5 +1,5 @@
 // component job: create a movement
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 type MovementFormData = {
   movementName: string;
@@ -33,11 +33,18 @@ const emptyForm = {
   movementExtraNotes: "",
 };
 
-export const MovementForm = () => {
+type MovementFormProps = {
+  editingMovementId: string;
+  onMovementChange: () => void;
+};
+
+export const MovementForm = ({ 
+  editingMovementId, 
+  onMovementChange, 
+}: MovementFormProps) => {
+  
   const [formData, setFormData] = useState<MovementFormData>(emptyForm);
-
   const [tagInput, setTagInput] = useState("");
-
   const[statusMessage, setStatusMessage] = useState("");
   
   // const movementData = {};
@@ -56,19 +63,21 @@ export const MovementForm = () => {
     e.preventDefault();
 
     const tagsArray = tagInput.split(",").map((tag) => tag.trim());
-
     const movementData = { ...formData, movementTags: tagsArray };
-
     console.log("movementData =", movementData);
 
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/movements`,
+      const method = editingMovementId ?  "PATCH" : "POST";
+      const url = editingMovementId 
+        ? `${import.meta.env.VITE_API_URL}/movements/${editingMovementId}`
+        : `${import.meta.env.VITE_API_URL}/movements`;
+      
+      const response = await fetch(url,
         {
-          method: "POST",
+          method: method,
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(movementData),
-        },
+        }
       );
 
       if (!response.ok) {
@@ -77,14 +86,25 @@ export const MovementForm = () => {
 
       const result = await response.json();
       console.log("server response =", result);
+     
+      onMovementChange();
+      
+      if (!editingMovementId) {
+        setFormData(emptyForm);
+        setTagInput("");
+      }
 
-      setFormData(emptyForm);
-      setTagInput("");
-      setStatusMessage("Movement created successfully!");
+      const successMessage = editingMovementId
+        ? "Movement updated successfully!"
+        : "Movement created successfully!";
+        setStatusMessage(successMessage);
 
     } catch (err) {
       console.log(err);
-       setStatusMessage("Failed to create movement.");
+      const failureMessage = editingMovementId
+        ? "Failed to update movement."
+        : "Failed to create movement.";
+       setStatusMessage(failureMessage);
     }
   }
 
@@ -106,6 +126,36 @@ export const MovementForm = () => {
       });
     }
   }
+  useEffect(() => {
+    if (!editingMovementId) {
+      setFormData(emptyForm);
+      setTagInput("");
+      return;
+    }
+
+    async function fetchMovement() {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/movements/${editingMovementId}`,
+      )
+      const data = await response.json();
+      setFormData({ 
+        movementName: data.data.movementName,
+        movementSummary: data.data.movementSummary,
+        movementDescription: data.data.movementDescription,
+        movementExecution: data.data.movementExecution,
+        movementDemand: data.data.movementDemand,
+        movementTerrain: data.data.movementTerrain,
+        movementStatus: data.data.movementStatus,
+        movementWhenToUse: data.data.movementWhenToUse,
+        movementHowToPerform: data.data.movementHowToPerform,
+        movementCommonMistakes: data.data.movementCommonMistakes,
+        movementTags: data.data.movementTags,
+        movementResearchNotes: data.data.movementResearchNotes,
+        movementExtraNotes: data.data.movementExtraNotes,
+      });
+    }
+    fetchMovement();
+  }, [editingMovementId]);
 
   return (
     <div className="max-w-4xl mx-auto p-8">
@@ -468,7 +518,7 @@ export const MovementForm = () => {
           </section>
         </div>
 
-        <button id="submitButton" type="submit">Create Movement</button>
+        <button id="submitButton" type="submit">Submit</button>
         {statusMessage && <p>{statusMessage}</p>}
       </form>
     </div>

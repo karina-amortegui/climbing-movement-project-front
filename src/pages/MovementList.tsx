@@ -7,7 +7,16 @@ type Movement = {
   movementSummary: string;
 };
 
-export const MovementList = () => {
+type MovementListProps = {
+  onSelect: (id: string) => void;
+  movementRefreshKey: number;
+};
+
+export const MovementList = ({ 
+  onSelect,
+  movementRefreshKey,
+ }: MovementListProps) => {
+
   const [movements, setMovements] = useState<Movement[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -26,7 +35,7 @@ export const MovementList = () => {
         finally { setLoading(false); }
     }
     fetchMovements(); 
-  }, []);
+  }, [movementRefreshKey]);
 
   if (loading) {
     return <p>Loading movements...</p>
@@ -48,7 +57,9 @@ export const MovementList = () => {
         <div key={movement._id}>{movement.movementName}
         <h2>{movement.movementName}</h2>
         <p>{movement.movementSummary}</p>
-        </div>))}
+        <button onClick={() => onSelect(movement._id)}>View</button>
+        </div>
+        ))}
     </div>
   );
 };

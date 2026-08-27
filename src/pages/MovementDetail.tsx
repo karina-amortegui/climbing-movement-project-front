@@ -17,13 +17,32 @@ type Movement = {
   movementExtraNotes: string;
 };
 
-export const MovementDetail = () => {
+type MovementDetailProps = {
+  selectedMovementId: string;
+  movementRefreshKey: number;
+  onEdit: (id: string) => void;
+  onDelete: () => void;
+};
+
+export const MovementDetail = ({ 
+  selectedMovementId,
+  movementRefreshKey,
+  onEdit, 
+  onDelete,
+}: MovementDetailProps) => {
   const [movement, setMovement] = useState<Movement|null>(null);
   const [statusMessage, setStatusMessage] = useState("");
-    async function fetchMovement() {
-      
+  const [isDeleted, setIsDeleted] = useState(false);
+    
+  async function fetchMovement() {
+    if (!selectedMovementId) {
+      return;
+    }
+
       try {
-        const response = await fetch("http://localhost:8787/movements/6a848788f29e21d2cae475ce");
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/movements/${selectedMovementId}`
+        );
         
         if (!response.ok) {
           throw new Error("Server response unsuccessful")
@@ -39,16 +58,52 @@ export const MovementDetail = () => {
 
   useEffect (() => {
     fetchMovement();
-  }, []);
+  }, [selectedMovementId, movementRefreshKey]);
   
   if (statusMessage) {
     return <p>{statusMessage}</p>
   }
 
+if (isDeleted) {
+  return <p>Movement deleted successfully.</p>;
+}
+
   if (movement === null) {
     return <p>Loading movement...</p>;
   }  
   
+  async function deleteMovement() {
+    if (movement === null) {
+      return;
+    }
+    
+    const confirmed = window.confirm(
+      "Are you sure you want to permanently delete this movement?"
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/movements/${movement._id}`,
+        { method: "DELETE", },
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to delete movement");
+      }
+      console.log("Movement deleted successfully");
+      onDelete();
+      setIsDeleted(true);
+      setMovement(null);
+
+    } catch(err) {
+      console.log(err)
+    }
+  }
+
   return (
     <div>
       <h1>{movement.movementName}</h1>
@@ -62,6 +117,14 @@ export const MovementDetail = () => {
       <p><strong>How to perform:</strong> {movement.movementHowToPerform}</p>
       <p><strong>Common mistakes:</strong> {movement.movementCommonMistakes}</p>
       <p><strong>Tags:</strong> {movement.movementTags.join(", ")}</p>
+
+      <div>
+        <button onClick={() => onEdit(movement._id)}>Edit</button>
+      </div>
+
+      <div>
+        <button onClick={deleteMovement}>Delete</button>
+      </div>
     </div>
   );
 };
