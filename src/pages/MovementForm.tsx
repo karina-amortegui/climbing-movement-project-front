@@ -1,5 +1,6 @@
 // component job: create a movement
 import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 
 type MovementFormData = {
   movementName: string;
@@ -34,14 +35,13 @@ const emptyForm = {
 };
 
 type MovementFormProps = {
-  editingMovementId: string;
   onMovementChange: () => void;
 };
 
 export const MovementForm = ({ 
-  editingMovementId, 
   onMovementChange, 
 }: MovementFormProps) => {
+  const { id } = useParams();
   
   const [formData, setFormData] = useState<MovementFormData>(emptyForm);
   const [tagInput, setTagInput] = useState("");
@@ -67,9 +67,9 @@ export const MovementForm = ({
     console.log("movementData =", movementData);
 
     try {
-      const method = editingMovementId ?  "PATCH" : "POST";
-      const url = editingMovementId 
-        ? `${import.meta.env.VITE_API_URL}/movements/${editingMovementId}`
+      const method = id ?  "PATCH" : "POST";
+      const url = id 
+        ? `${import.meta.env.VITE_API_URL}/movements/${id}`
         : `${import.meta.env.VITE_API_URL}/movements`;
       
       const response = await fetch(url,
@@ -89,19 +89,19 @@ export const MovementForm = ({
      
       onMovementChange();
       
-      if (!editingMovementId) {
+      if (!id) {
         setFormData(emptyForm);
         setTagInput("");
       }
 
-      const successMessage = editingMovementId
+      const successMessage = id
         ? "Movement updated successfully!"
         : "Movement created successfully!";
         setStatusMessage(successMessage);
 
     } catch (err) {
       console.log(err);
-      const failureMessage = editingMovementId
+      const failureMessage = id
         ? "Failed to update movement."
         : "Failed to create movement.";
        setStatusMessage(failureMessage);
@@ -127,7 +127,7 @@ export const MovementForm = ({
     }
   }
   useEffect(() => {
-    if (!editingMovementId) {
+    if (!id) {
       setFormData(emptyForm);
       setTagInput("");
       return;
@@ -135,7 +135,7 @@ export const MovementForm = ({
 
     async function fetchMovement() {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/movements/${editingMovementId}`,
+        `${import.meta.env.VITE_API_URL}/movements/${id}`,
       )
       const data = await response.json();
       setFormData({ 
@@ -155,7 +155,7 @@ export const MovementForm = ({
       });
     }
     fetchMovement();
-  }, [editingMovementId]);
+  }, [id]);
 
   return (
     <div className="max-w-4xl mx-auto p-8">

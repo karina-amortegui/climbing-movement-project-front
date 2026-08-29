@@ -1,5 +1,6 @@
 // component job: display the movement list
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 type Movement = {
   _id: string;
@@ -8,12 +9,10 @@ type Movement = {
 };
 
 type MovementListProps = {
-  onSelect: (id: string) => void;
   movementRefreshKey: number;
 };
 
 export const MovementList = ({ 
-  onSelect,
   movementRefreshKey,
  }: MovementListProps) => {
 
@@ -57,7 +56,7 @@ export const MovementList = ({
         <div key={movement._id}>{movement.movementName}
         <h2>{movement.movementName}</h2>
         <p>{movement.movementSummary}</p>
-        <button onClick={() => onSelect(movement._id)}>View</button>
+        <Link to={`/movements/${movement._id}`}>View</Link>
         </div>
         ))}
     </div>

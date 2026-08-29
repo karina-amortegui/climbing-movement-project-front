@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
 
 type Movement = {
   _id: string;
@@ -18,30 +19,28 @@ type Movement = {
 };
 
 type MovementDetailProps = {
-  selectedMovementId: string;
   movementRefreshKey: number;
-  onEdit: (id: string) => void;
   onDelete: () => void;
 };
 
 export const MovementDetail = ({ 
-  selectedMovementId,
   movementRefreshKey,
-  onEdit, 
   onDelete,
 }: MovementDetailProps) => {
+  const { id } = useParams();
+
   const [movement, setMovement] = useState<Movement|null>(null);
   const [statusMessage, setStatusMessage] = useState("");
   const [isDeleted, setIsDeleted] = useState(false);
     
   async function fetchMovement() {
-    if (!selectedMovementId) {
+    if (!id) {
       return;
     }
 
       try {
         const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/movements/${selectedMovementId}`
+          `${import.meta.env.VITE_API_URL}/movements/${id}`
         );
         
         if (!response.ok) {
@@ -58,7 +57,7 @@ export const MovementDetail = ({
 
   useEffect (() => {
     fetchMovement();
-  }, [selectedMovementId, movementRefreshKey]);
+  }, [id, movementRefreshKey]);
   
   if (statusMessage) {
     return <p>{statusMessage}</p>
@@ -119,7 +118,7 @@ if (isDeleted) {
       <p><strong>Tags:</strong> {movement.movementTags.join(", ")}</p>
 
       <div>
-        <button onClick={() => onEdit(movement._id)}>Edit</button>
+        <Link to={`/admin/movements/${movement._id}/edit`}>Edit</Link>
       </div>
 
       <div>

@@ -1,34 +1,73 @@
 import "./App.css";
 import { useState } from "react";
+import { Home } from "./pages/Home";
+import { Login } from "./pages/Login";
+import { Layout } from "./components/Layout";
 import { MovementForm } from "./pages/MovementForm";
 import { MovementList } from "./pages/MovementList";
 import { MovementDetail } from "./pages/MovementDetail";
+import { Routes, Route } from "react-router-dom";
 
 function App() {
-  const [editingMovementId, setEditingMovementId] = useState("");
-  const [selectedMovementId, setSelectedMovementId] = useState("");
   const [movementRefreshKey, setMovementRefreshKey] = useState(0);
  
-  
   return (
-    <>
-      <MovementForm 
-        editingMovementId={editingMovementId}
-        onMovementChange={() => setMovementRefreshKey((key) => key + 1)} />
-      <MovementList onSelect={setSelectedMovementId} 
-                    movementRefreshKey={movementRefreshKey} />
-      <MovementDetail 
-        selectedMovementId={selectedMovementId}
-        movementRefreshKey={movementRefreshKey}
-        onEdit={setEditingMovementId}
-        onDelete={() => {
-          setEditingMovementId("");
-          setSelectedMovementId("");
-          setMovementRefreshKey((key) => + 1);
-        }} />
-    </>
+    <Routes>
+      <Route element={<Layout />}>
+
+        <Route
+          path="/"
+          element={<Home />}
+        />
+
+        <Route
+          path="/login"
+          element={<Login />}
+        />
+
+        <Route
+          path="/movements"
+          element={<MovementList movementRefreshKey={movementRefreshKey} />}
+        />
+
+        <Route
+          path="/movements/:id"
+          element={
+            <MovementDetail
+              movementRefreshKey={movementRefreshKey}
+              onDelete={() => {
+                setMovementRefreshKey((key) => key + 1);
+              }}
+            />
+          }
+        />
+
+        <Route
+          path="/admin/movements/new"
+          element={
+            <MovementForm
+              onMovementChange={() =>
+                setMovementRefreshKey((key) => key + 1)
+              }
+            />
+          }
+        />
+
+        <Route
+          path="/admin/movements/:id/edit"
+          element={
+            <MovementForm
+              onMovementChange={() =>
+                setMovementRefreshKey((key) => key + 1)
+              }
+            />
+          }
+        />
+
+      </Route>
+    </Routes>
   );
-}
+};
 
 export default App;
 
