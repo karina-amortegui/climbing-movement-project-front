@@ -72,14 +72,24 @@ export const MovementForm = ({
         ? `${import.meta.env.VITE_API_URL}/movements/${id}`
         : `${import.meta.env.VITE_API_URL}/movements`;
       
+      const token = localStorage.getItem("token");
+      
       const response = await fetch(url,
         {
           method: method,
-          headers: { "Content-Type": "application/json" },
+          headers: { 
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+           },
           body: JSON.stringify(movementData),
         }
       );
 
+     if (response.status === 401) {
+      setStatusMessage("Please log in to make changes.");
+      return;
+     }
+      
       if (!response.ok) {
         throw new Error("Server response unsuccessful");
       }

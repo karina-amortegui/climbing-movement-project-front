@@ -1,14 +1,43 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
+  const navigate = useNavigate(); 
+
+async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
+  e.preventDefault();
+ 
+  const response = await fetch("http://localhost:8787/login",
+    {
+      method: "POST",
+      headers: { "Content-Type" : "application/json" },
+      body: JSON.stringify
+      ({
+          username: username,
+          password: password,
+      }),
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    setErrorMessage(data.message);
+    return;
+  }
+
+  localStorage.setItem("token", data.token);
+  navigate("/movements");
+}
   return (
     <main>
       <h1>AdminLogin</h1>
 
-      <form onSubmit={(e) => e.preventDefault()}>
+      <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="username">Username</label>
           <input
@@ -34,6 +63,7 @@ export const Login = () => {
         </div>
 
         <button type="submit">Sign in</button>
+        {errorMessage && <p>{errorMessage}</p>}
       </form>
     </main>
   );

@@ -25,7 +25,6 @@ type MovementDetailProps = {
 
 export const MovementDetail = ({ 
   movementRefreshKey,
-  onDelete,
 }: MovementDetailProps) => {
   const { id } = useParams();
 
@@ -84,17 +83,28 @@ if (isDeleted) {
       return;
     }
 
+    const token = localStorage.getItem("token");
+
     try {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/movements/${movement._id}`,
-        { method: "DELETE", },
+        { 
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+         },
       );
+
+      if (response.status === 401) {
+        setStatusMessage("Please log in to make changes.");
+        return;
+      }
 
       if (!response.ok) {
         throw new Error("Failed to delete movement");
       }
       console.log("Movement deleted successfully");
-      onDelete();
       setIsDeleted(true);
       setMovement(null);
 
