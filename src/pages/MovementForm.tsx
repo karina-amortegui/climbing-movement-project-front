@@ -1,6 +1,7 @@
 // component job: create a movement
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import "./MovementForm.css"; 
 
 type MovementFormData = {
   movementName: string;
@@ -42,6 +43,7 @@ export const MovementForm = ({
   onMovementChange, 
 }: MovementFormProps) => {
   const { id } = useParams();
+  const navigate = useNavigate();
   
   const [formData, setFormData] = useState<MovementFormData>(emptyForm);
   const [tagInput, setTagInput] = useState("");
@@ -109,6 +111,10 @@ export const MovementForm = ({
         : "Movement created successfully!";
         setStatusMessage(successMessage);
 
+        if (id) {
+          navigate(`/movements/${id}`);
+        }
+
     } catch (err) {
       console.log(err);
       const failureMessage = id
@@ -163,55 +169,68 @@ export const MovementForm = ({
         movementResearchNotes: data.data.movementResearchNotes,
         movementExtraNotes: data.data.movementExtraNotes,
       });
+    setTagInput(data.data.movementTags.join(", "));
     }
     fetchMovement();
   }, [id]);
 
   return (
-    <div className="max-w-4xl mx-auto p-8">
+    <main className="movement-form-page">
+      <header className="movement-form__header">
+        <p className="movement-form__eyebrow">Admin Workspace</p>
+
+        <h1>{id ? "Edit Movement" : "Create Movement"}</h1>
+
+        <p className="movement-form__intro">
+          {id
+            ? "Update the movement information stored in the CRUXARA library."
+            : "Add structured movement information to the CRUXARA library."}
+        </p>
+      </header>
+
       <form
         id="movement-form"
-        className="bg-white rounded-xl shadow-lg p-8"
+        className="movement-form"
         onSubmit={(e) => createMovement(e as unknown as SubmitEvent)}
       >
-        <section>
-          <h2 className="text-4xl font-bold text-blue-600 text-center mb-8">
-            Basic Information
-          </h2>
 
-          <div className="mb-6">
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Movement Name
-            </label>
-            <input
-              id="name"
-              name="movementName"
-              type="text"
-              className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 
-              focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
-              required
-              value={formData.movementName}
-              onChange={(e) =>
-                setFormData({ ...formData, movementName: e.target.value })
-              }
-            />
+      <section className="movement-form__panel">
+        <div className="movement-form__section-header">
+          <div>
+            <p className="movement-form__section-number">01</p>
+            <h2>Basic Information</h2>
           </div>
 
-          <div className="mb-6">
-            <label
-              htmlFor="summary"
-              className="block text-sm font-medium text-gray-700 mb-2 "
-            >
+          <p>Core movement definition and classification</p>
+        </div>
+
+      <div className="movement-form__field">
+        <label htmlFor="name">
+          Movement Name
+        </label>
+
+        <input
+          id="name"
+          name="movementName"
+          type="text"
+          className="movement-form__control"
+          required
+          value={formData.movementName}
+          onChange={(e) =>
+            setFormData({ ...formData, movementName: e.target.value })
+          }
+        />
+      </div>
+
+          <div className="movement-form__field">
+            <label htmlFor="summary">
               Short Summary
             </label>
+
             <textarea
               id="summary"
               name="movementSummary"
-              className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900
-              focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+              className="movement-form__control"
               required
               value={formData.movementSummary}
               onChange={(e) =>
@@ -220,19 +239,16 @@ export const MovementForm = ({
             ></textarea>
           </div>
 
-          <div className="mb-6">
-            <label
-              htmlFor="description"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
+          <div className="movement-form__field">
+            <label htmlFor="description">
               Full Description
             </label>
+
             <textarea
               id="description"
               name="movementDescription"
               rows={5}
-              className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900
-              focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+              className="movement-form__control"
               required
               value={formData.movementDescription}
               onChange={(e) =>
@@ -244,107 +260,94 @@ export const MovementForm = ({
             ></textarea>
           </div>
 
-          <fieldset className="mb-6">
-            <legend className="block text-sm font-medium text-gray-700 mb-3">
-              Execution Style
-            </legend>
-            <div>
-              <label className="flex items-center gap-2 text-sm text-gray-700 ">
-                <select
-                  id="execution"
-                  name="movementExecution"
-                  value={formData.movementExecution}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      movementExecution: e.target.value,
-                    })
-                  }
-                  className="w-auto rounded-lg border border-gray-300 
-                      bg-white px-4 py-3 text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none
-                      focus:ring-2 focus:ring-blue-200"
-                >
-                  <option value="">Select a style</option>
-                  <option value="static">Static</option>
-                  <option value="dynamic">Dynamic</option>
-                </select>
-              </label>
-            </div>
+          <fieldset className="movement-form__field">
+            <legend>Execution Style</legend>
+
+            <select
+              id="execution"
+              name="movementExecution"
+              value={formData.movementExecution}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  movementExecution: e.target.value,
+                })
+              }
+              className="movement-form__control"
+            >
+              <option value="">Select a style</option>
+              <option value="static">Static</option>
+              <option value="dynamic">Dynamic</option>
+            </select>
           </fieldset>
 
-          <fieldset className="mb-6">
-            <legend className="block text-sm font-medium text-gray-700 mb-3">
-              Primary Skill Demands
-            </legend>
-            <div className="grid grid-cols-2 gap-1 sm:grid-cols-3">
-              <label className="flex items-center gap-2">
+          <fieldset className="movement-form__field">
+            <legend>Primary Skill Demands</legend>
+            <div className="movement-form__checkbox-grid">
+
+              <label className="movement-form__checkbox">
                 <input
                   type="checkbox"
                   name="movementDemand"
                   value="strength"
                   onChange={(e) => handleInputChange(e)}
                   checked={formData.movementDemand.includes("strength")}
-                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
-                <span className="text-gray-700 text-sm">Strength</span>
+                <span>Strength</span>
               </label>
 
-              <label className="flex items-center gap-2">
+              <label className="movement-form__checkbox">
                 <input
                   type="checkbox"
                   name="movementDemand"
                   value="power"
                   onChange={(e) => handleInputChange(e)}
                   checked={formData.movementDemand.includes("power")}
-                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
-                <span className="text-gray-700 text-sm">Power</span>
+                <span>Power</span>
               </label>
 
-              <label className="flex items-center gap-2">
+              <label className="movement-form__checkbox">
                 <input
                   type="checkbox"
                   name="movementDemand"
                   value="balance"
                   onChange={(e) => handleInputChange(e)}
                   checked={formData.movementDemand.includes("balance")}
-                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
-                <span className="text-gray-700 text-sm">Balance</span>
+                <span>Balance</span>
               </label>
 
-              <label className="flex items-center gap-2">
+              <label className="movement-form__checkbox">
                 <input
                   type="checkbox"
                   name="movementDemand"
                   value="coordination"
                   onChange={(e) => handleInputChange(e)}
                   checked={formData.movementDemand.includes("coordination")}
-                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
-                <span className="text-gray-700 text-sm">Coordination</span>
+                <span>Coordination</span>
               </label>
 
-              <label className="flex items-center gap-2">
+              <label className="movement-form__checkbox">
                 <input
                   type="checkbox"
                   name="movementDemand"
                   value="precision"
                   onChange={(e) => handleInputChange(e)}
                   checked={formData.movementDemand.includes("precision")}
-                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
-                <span className="text-gray-700 text-sm">Precision</span>
+                <span>Precision</span>
               </label>
             </div>
           </fieldset>
 
-          <fieldset className="mb-6">
+          <fieldset className="movement-form__field">
             <legend className="block text-sm font-medium text-gray-700 mb-3">
               Applicable Terrain Types
             </legend>
-            <div className="grid grid-cols-2 gap-1 sm:grid-cols-3">
-              <label className="flex items-center gap-2">
+            <div className="movement-form__checkbox-grid">
+              <label className="movement-form__checkbox">
                 <input
                   type="checkbox"
                   name="movementTerrain"
@@ -353,10 +356,10 @@ export const MovementForm = ({
                   checked={formData.movementTerrain.includes("slab")}
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
-                <span className="text-gray-700 text-sm">Slab</span>
+                <span>Slab</span>
               </label>
 
-              <label className="flex items-center gap-2">
+              <label className="movement-form__checkbox">
                 <input
                   type="checkbox"
                   name="movementTerrain"
@@ -365,10 +368,10 @@ export const MovementForm = ({
                   checked={formData.movementTerrain.includes("vertical")}
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
-                <span className="text-gray-700 text-sm">Vertical</span>
+                <span>Vertical</span>
               </label>
 
-              <label className="flex items-center gap-2">
+              <label className="movement-form__checkbox">
                 <input
                   type="checkbox"
                   name="movementTerrain"
@@ -377,10 +380,10 @@ export const MovementForm = ({
                   checked={formData.movementTerrain.includes("overhang")}
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
-                <span className="text-gray-700 text-sm">Overhang</span>
+                <span>Overhang</span>
               </label>
 
-              <label className="flex items-center gap-2">
+              <label className="movement-form__checkbox">
                 <input
                   type="checkbox"
                   name="movementTerrain"
@@ -389,10 +392,10 @@ export const MovementForm = ({
                   checked={formData.movementTerrain.includes("roof")}
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
-                <span className="text-gray-700 text-sm">Roof</span>
+                <span>Roof</span>
               </label>
 
-              <label className="flex items-center gap-2">
+              <label className="movement-form__checkbox">
                 <input
                   type="checkbox"
                   name="movementTerrain"
@@ -401,10 +404,10 @@ export const MovementForm = ({
                   checked={formData.movementTerrain.includes("dihedral")}
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
-                <span className="text-gray-700 text-sm">Dihedral</span>
+                <span>Dihedral</span>
               </label>
 
-              <label className="flex items-center gap-2">
+              <label className="movement-form__checkbox">
                 <input
                   type="checkbox"
                   name="movementTerrain"
@@ -413,25 +416,117 @@ export const MovementForm = ({
                   checked={formData.movementTerrain.includes("arete")}
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
-                <span className="text-gray-700 text-sm">Arete</span>
+                <span>Arete</span>
               </label>
             </div>
-          </fieldset>
-
-          <fieldset>
-            <legend className="block text-sm font-medium text-gray-700 mb-3">
-              Entry Status
-            </legend>
+          </fieldset>       
+        </section>
+        
+        <section className="movement-form__panel">
+          <div className="movement-form__section-header">
             <div>
-              <label className="flex items-center gap-2 text-sm text-gray-700 ">
+              <p className="movement-form__section-number">02</p>
+              <h2>Teaching Information</h2>
+            </div>
+
+            <p>How and when the movement should be used</p>
+          </div>
+
+          <div className="movement-form__field">
+            <label htmlFor="when-to-use">When to Use It</label>
+
+            <textarea
+              id="when-to-use"
+              name="movementWhenToUse"
+              className="movement-form__control"
+              value={formData.movementWhenToUse}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  movementWhenToUse: e.target.value,
+                })
+              }
+              rows={4}
+            ></textarea>
+          </div>
+
+            <div className="movement-form__field">
+              <label htmlFor="how-to-perform">How to Perform It</label>
+              <textarea
+                id="how-to-perform"
+                name="movementHowToPerform"
+                className="movement-form__control"
+                value={formData.movementHowToPerform}
+                onChange={(e) => 
+                  setFormData({ 
+                    ...formData, 
+                    movementHowToPerform: e.target.value, 
+                  })
+                }
+                rows={6}
+              ></textarea>
+            </div>
+
+            <div className="movement-form__field--warning">
+              <label htmlFor="common-mistakes">Common Mistakes</label>
+              <textarea
+                id="common-mistakes"
+                name="movementCommonMistakes"
+                className="movement-form__control"
+                value={formData.movementCommonMistakes}
+                onChange={(e) => 
+                  setFormData({ 
+                    ...formData, 
+                    movementCommonMistakes: e.target.value, 
+                  })
+                }
+                rows={5}
+              ></textarea>
+            </div>
+          </section>
+
+          <section className="movement-form__panel">
+            <div className="movement-form__section-header">
+              <div>
+                <p className="movement-form__section-number">03</p>
+                <h2>Organization</h2>
+              </div>
+
+              <p>Publishing status and movement classification</p>
+            </div>
+
+            <div className="movement-form__field">
+              <label htmlFor="tags">Tags</label>
+
+              <input
+                id="tags"
+                name="movementTags"
+                type="text"
+                className="movement-form__control"
+                placeholder="Example: balance, overhang, hip rotation"
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+              />
+
+              <p className="movement-form__help">
+                Separate multiple tags with commas.
+              </p>
+            </div>
+
+            <fieldset className="movement-form__field">
+              <legend>Entry Status</legend>
+
                 <select
                   id="status"
                   name="movementStatus"
                   value={formData.movementStatus}
-                  onChange={(e) => setFormData({ ...formData, movementStatus: e.target.value })}
-                  className="w-auto rounded-lg border border-gray-300 
-                      bg-white px-4 py-3 text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none
-                      focus:ring-2 focus:ring-blue-200"
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      movementStatus: e.target.value,
+                    })
+                  }
+                  className="movement-form__control"
                   required
                 >
                   <option value="">Select a Status</option>
@@ -439,98 +534,69 @@ export const MovementForm = ({
                   <option value="needs-review">Needs Review</option>
                   <option value="published">Published</option>
                 </select>
-              </label>
-            </div>
-          </fieldset>
-        </section>
-        <div>
-          <section>
-            <h3 className="text-4xl font-bold text-blue-600 mb-6">
-              Teaching Information
-            </h3>
-
-            <div>
-              <label htmlFor="when-to-use">When to Use It</label>
-              <textarea
-                id="when-to-use"
-                name="movementWhenToUse"
-                value={formData.movementWhenToUse}
-                onChange={(e) => setFormData({ ...formData, movementWhenToUse: e.target.value, })}
-                rows={4}
-              ></textarea>
-            </div>
-
-            <div>
-              <label htmlFor="how-to-perform">How to Perform It</label>
-              <textarea
-                id="how-to-perform"
-                name="movementHowToPerform"
-                value={formData.movementHowToPerform}
-                onChange={(e) => setFormData({ ...formData, movementHowToPerform: e.target.value, })}
-                rows={6}
-              ></textarea>
-            </div>
-
-            <div>
-              <label htmlFor="common-mistakes">Common Mistakes</label>
-              <textarea
-                id="common-mistakes"
-                name="movementCommonMistakes"
-                value={formData.movementCommonMistakes}
-                onChange={(e) => setFormData({ ...formData, movementCommonMistakes: e.target.value, })}
-                rows={5}
-              ></textarea>
-            </div>
+            </fieldset>
           </section>
 
-          <section>
-            <h2>Organization</h2>
+          <section className="movement-form__panel movement-form__panel--internal">
+            <div className="movement-form__section-header">
+              <div>
+                <p className="movement-form__section-number">04</p>
+                <h2>Internal Notes</h2>
+              </div>
 
-            <div>
-              <label htmlFor="tags">Tags</label>
-              <input
-                id="tags"
-                name="movementTags"
-                type="text"
-                placeholder="Example: balance, overhang, hip rotation"
-                value={tagInput}
-                onChange={(e) => setTagInput(e.target.value)}
-              />
+              <p>Admin-only research and working notes</p>
             </div>
 
-            <p>Separate multiple tags with commas.</p>
-          </section>
+          <div className="movement-form__field">
+            <label htmlFor="research-notes">Research Notes</label>
 
-          <section>
-            <h2>Internal Notes</h2>
+            <textarea
+              id="research-notes"
+              name="movementResearchNotes"
+              className="movement-form__control"
+              value={formData.movementResearchNotes}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  movementResearchNotes: e.target.value,
+                })
+              }
+              rows={5}
+            ></textarea>
+          </div>
 
-            <div>
-              <label htmlFor="research-notes">Research Notes</label>
-              <textarea
-                id="research-notes"
-                name="movementResearchNotes"
-                value={formData.movementResearchNotes}
-                onChange={(e) => setFormData({ ...formData, movementResearchNotes: e.target.value, })}
-                rows={5}
-              ></textarea>
-            </div>
-
-            <div>
+            <div className="movement-form__field">
               <label htmlFor="extra-notes">Extra Notes</label>
               <textarea
                 id="extra-notes"
                 name="movementExtraNotes"
+                className="movement-form__control"
                 value={formData.movementExtraNotes}
-                onChange={(e) => setFormData({ ...formData, movementExtraNotes: e.target.value, })}
+                onChange={(e) => 
+                  setFormData({ 
+                    ...formData, 
+                    movementExtraNotes: e.target.value, 
+                  })
+                }
                 rows={5}
               ></textarea>
             </div>
           </section>
-        </div>
 
-        <button id="submitButton" type="submit">Submit</button>
-        {statusMessage && <p>{statusMessage}</p>}
+        <button
+          id="submitButton"
+          type="submit"
+          className="movement-form__submit"
+        >
+          {id ? "Update Movement" : "Create Movement"}
+        </button>
+        {statusMessage && (
+          <p className="movement-form__status">
+            {statusMessage}
+          </p>
+        )}
       </form>
-    </div>
+    </main>
   );
 };
+

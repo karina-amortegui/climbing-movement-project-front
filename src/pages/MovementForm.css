@@ -1,0 +1,226 @@
+.movement-form-page {
+  width: min(100% - 2rem, var(--content-width));
+  margin: 0 auto;
+  padding: 3rem 0 4rem;
+}
+
+.movement-form__header {
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.movement-form__eyebrow {
+  margin-bottom: 0.65rem;
+  color: var(--color-primary);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.movement-form__header h1 {
+  margin-bottom: 0.75rem;
+  font-size: clamp(2.25rem, 7vw, 4.5rem);
+  font-weight: 800;
+  letter-spacing: -0.06em;
+  text-transform: uppercase;
+}
+
+.movement-form__intro {
+  max-width: 650px;
+  margin-bottom: 0;
+  color: var(--color-text-muted);
+  font-size: clamp(0.95rem, 2vw, 1.05rem);
+}
+
+.movement-form {
+  display: grid;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.movement-form__panel {
+  padding: 1.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-medium);
+  background: var(--color-surface);
+}
+
+.movement-form__section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.movement-form__section-header > div {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.movement-form__section-number {
+  margin: 0;
+  color: var(--color-primary);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.movement-form__section-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  letter-spacing: -0.03em;
+}
+
+.movement-form__section-header > p {
+  max-width: 260px;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  text-align: right;
+}
+
+.movement-form__field {
+  display: grid;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.movement-form__field label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--color-text);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.movement-form__field label span {
+  color: var(--color-primary);
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+}
+
+.movement-form__control {
+  width: 100%;
+  min-height: 46px;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-small);
+  background: #141616;
+  color: var(--color-text);
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.movement-form__control:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(0, 245, 255, 0.08);
+}
+
+.movement-form__field legend {
+  margin-bottom: 0.5rem;
+  color: var(--color-text);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.movement-form__checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.movement-form__field .movement-form__checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.65rem;
+  padding: 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-small);
+  background: #141616;
+  cursor: pointer;
+}
+
+.movement-form__checkbox input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--color-primary);
+}
+
+.movement-form__checkbox span {
+  color: var(--color-text);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 680px) {
+  .movement-form__checkbox-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .movement-form__section-header {
+  flex-direction: column;
+  gap: 0.5rem;
+  }
+
+  .movement-form__section-header > p {
+  max-width: none;
+  text-align: left;
+  }
+}
+
+.movement-form__help {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.72rem;
+}
+
+.movement-form__submit {
+  width: fit-content;
+  min-height: 46px;
+  padding: 0.75rem 1.25rem;
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-small);
+  background: var(--color-primary);
+  color: #081011;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.movement-form__status {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.movement-form__field--warning {
+  padding: 1rem;
+  border-left: 3px solid var(--color-danger);
+  border-radius: var(--radius-small);
+  background: rgba(255, 125, 115, 0.04);
+}
+
+.movement-form__field--warning label {
+  color: var(--color-danger);
+}
+
+.movement-form__panel--internal {
+  border-color: rgba(0, 245, 255, 0.35);
+  background: var(--color-surface-raised);
+}
