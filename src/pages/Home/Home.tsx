@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
+import { CategoryCard } from "../../components/CategoryCard";
 import "./Home.css";
 
-import { MovementCard } from "../../components";
+//import { MovementCard } from "../../components";
 
 export const Home = () => {
 
@@ -60,7 +61,11 @@ export const Home = () => {
 
           {
             categoryCards.map(({ label, header }) => (
-              <MovementCard label={label} header={header} />
+              <CategoryCard
+                key={header}
+                label={label}
+                header={header}
+              />
             ))
           }
 

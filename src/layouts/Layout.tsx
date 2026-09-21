@@ -14,7 +14,6 @@ type LayoutProps = {
 export const Layout = ({ headerActions }: LayoutProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-
   return (
     <div className="site-shell">
       <header className="site-header">
