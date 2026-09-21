@@ -1,19 +1,28 @@
+// Libraries
 import { useState } from "react";
-import { Home } from "./pages/Home";
-import { Login } from "./pages/Login";
-import { Layout } from "./components/Layout";
-import { MovementForm } from "./pages/MovementForm";
-import { MovementList } from "./pages/MovementList";
-import { MovementDetail } from "./pages/MovementDetail";
 import { Routes, Route } from "react-router-dom";
+
+// Pages
+import { Home } from "./pages/Home/Home";
+import { Login } from "./pages/Login/Login";
+import { MovementForm } from "./pages/MovementForm/MovementForm";
+import { MovementList } from "./pages/MovementList/MovementList";
+import { MovementDetail } from "./pages/MovementDetail/MovementDetail";
+
+// Layouts
+import { PublicLayout } from "./layouts/PublicLayout";
+import { AdminLayout } from "./layouts/AdminLayout";
+
+// Admin Protection
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 function App() {
   const [movementRefreshKey, setMovementRefreshKey] = useState(0);
- 
+
   return (
     <Routes>
-      <Route element={<Layout />}>
-
+      {/* Public Routes, PublicLayout */}
+      <Route element={<PublicLayout />}>
         <Route
           path="/"
           element={<Home />}
@@ -40,29 +49,33 @@ function App() {
             />
           }
         />
+      </Route>
 
-        <Route
-          path="/admin/movements/new"
-          element={
-            <MovementForm
-              onMovementChange={() =>
-                setMovementRefreshKey((key) => key + 1)
-              }
-            />
-          }
-        />
+      {/* Protected Admin Routes, Admin Layout } */}
+      <Route element={<ProtectedRoute />}>
+        <Route element={<AdminLayout />}>
+          <Route
+            path="/admin/movements/new"
+            element={
+              <MovementForm
+                onMovementChange={() =>
+                  setMovementRefreshKey((key) => key + 1)
+                }
+              />
+            }
+          />
 
-        <Route
-          path="/admin/movements/:id/edit"
-          element={
-            <MovementForm
-              onMovementChange={() =>
-                setMovementRefreshKey((key) => key + 1)
-              }
-            />
-          }
-        />
-
+          <Route
+            path="/admin/movements/:id/edit"
+            element={
+              <MovementForm
+                onMovementChange={() =>
+                  setMovementRefreshKey((key) => key + 1)
+                }
+              />
+            }
+          />
+        </Route>
       </Route>
     </Routes>
   );
@@ -70,5 +83,4 @@ function App() {
 
 export default App;
 
-//Thinking about what pages you need and what they are doing
-//Planning things out to determine if/when you need global state
+

@@ -1,18 +1,19 @@
-import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
+import type { ReactNode } from "react";
 import { useState } from "react";
-import "./Layout.css";
+import { Link, NavLink, Outlet } from "react-router-dom"
 
-export const Layout = () => {
+/*
+* Shared layout for site structure, navigation, 
+* header actions, and responsive menu behavior.
+*/
+
+type LayoutProps = {
+  headerActions?: ReactNode;
+};
+
+export const Layout = ({ headerActions }: LayoutProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const navigate = useNavigate();
-  useLocation();
-  //isLoggedIn - checks whether the token currently exists
-  const isLoggedIn = Boolean(localStorage.getItem("token"));
 
-  function handleLogout() {
-    localStorage.removeItem("token");
-    navigate("/login");
-  }
 
   return (
     <div className="site-shell">
@@ -35,6 +36,7 @@ export const Layout = () => {
                 : "site-navigation"
             }
             aria-label="Main navigation"
+            onClick={() => setIsMenuOpen(false)}
           >
             <NavLink
               className={({ isActive }) =>
@@ -42,7 +44,6 @@ export const Layout = () => {
               }
               to="/"
               end
-              onClick={() => setIsMenuOpen(false)}
             >
               Home
             </NavLink>
@@ -52,39 +53,11 @@ export const Layout = () => {
                 isActive ? "nav-link nav-link--active" : "nav-link"
               }
               to="/movements"
-              onClick={() => setIsMenuOpen(false)}
             >
               Movements
             </NavLink>
-
-            {!isLoggedIn && (
-              <NavLink
-                className={({ isActive }) =>
-                  isActive ? "nav-link nav-link--active" : "nav-link"
-                }
-                to="/login"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Admin Login
-              </NavLink>
-            )}
+            {headerActions}
           </nav>
-
-          {isLoggedIn && (
-            <div className="site-header__actions">
-              <Link className="header-action-link" to="/admin/movements/new">
-                Add Movement
-              </Link>
-
-              <button
-                className="logout-button"
-                type="button"
-                onClick={handleLogout}
-              >
-                Logout
-              </button>
-            </div>
-          )}
 
           <button
             className="menu-toggle"
@@ -104,5 +77,9 @@ export const Layout = () => {
         <Outlet />
       </main>
     </div>
+
   );
 };
+
+
+

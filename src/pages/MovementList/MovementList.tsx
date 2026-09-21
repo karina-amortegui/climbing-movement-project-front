@@ -2,16 +2,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import "./MovementList.css";
-
-type Movement = {
-  _id: string;
-  movementName: string;
-  movementSummary: string;
-};
-
-type MovementListProps = {
-  movementRefreshKey: number;
-};
+import type { ExampleImage, Movement, MovementListProps } from "../../types/MovementTypes";
 
 export const MovementList = ({
   movementRefreshKey,

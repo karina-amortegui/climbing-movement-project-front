@@ -2,6 +2,18 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import "./MovementDetail.css";
 
+type ExampleImage = {
+  url: string;
+  altText: string;
+  creator: string;
+  source: string;
+  sourceUrl: string;
+  license: string;
+  licenseUrl: string;
+  caption: string;
+  order: number;
+};
+
 type Movement = {
   _id: string;
   movementName: string;
@@ -17,6 +29,7 @@ type Movement = {
   movementTags: string[];
   movementResearchNotes: string;
   movementExtraNotes: string;
+  exampleImages: ExampleImage[];
 };
 
 type MovementDetailProps = {
