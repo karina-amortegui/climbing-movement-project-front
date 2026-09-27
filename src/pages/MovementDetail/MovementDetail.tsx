@@ -1,7 +1,5 @@
-import type {
-  Movement,
-  MovementDetailProps,
-} from "../../types/MovementTypes";
+import type { Movement, MovementDetailProps } from "../../types/MovementTypes";
+import { MovementDetailCard } from "./components/MovementDetailCard";
 import { MovementDetailChipPanel } from "./components/MovementDetailChipPanel";
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -17,6 +15,7 @@ export const MovementDetail = ({
   const [statusMessage, setStatusMessage] = useState("");
   const [isDeleted, setIsDeleted] = useState(false);
 
+  // Controls admin-only UI visibility; backend JWT middleware enforces actual authorization.
   const isLoggedIn = Boolean(localStorage.getItem("token"));
 
   useEffect(() => {
@@ -173,29 +172,31 @@ export const MovementDetail = ({
 
       <div className="movement-detail__layout">
         <div className="movement-detail__primary">
-          <section className="detail-panel detail-panel--feature">
-            <p className="detail-panel__label">Movement overview</p>
-            <h2>Description</h2>
-            <p>{movement.movementDescription}</p>
-          </section>
 
-          <section className="detail-panel">
-            <p className="detail-panel__label">Application</p>
-            <h2>When to use it</h2>
-            <p>{movement.movementWhenToUse}</p>
-          </section>
+          <MovementDetailCard
+            label="Movement Overview"
+            heading="Description"
+            content={movement.movementDescription}
+            variant="feature"
+          />
 
-          <section className="detail-panel">
-            <p className="detail-panel__label">Technique sequence</p>
-            <h2>How to perform it</h2>
-            <p>{movement.movementHowToPerform}</p>
-          </section>
+          <MovementDetailCard
+            label="Application"
+            heading="When to use it"
+            content={movement.movementWhenToUse}
+          />
 
-          <section className="detail-panel">
-            <p className="detail-panel__label">Execution focus</p>
-            <h2>Execution</h2>
-            <p>{movement.movementExecution}</p>
-          </section>
+          <MovementDetailCard
+            label="Technique sequence"
+            heading="How to perform it"
+            content={movement.movementHowToPerform}
+          />
+
+          <MovementDetailCard
+            label="Execution focus"
+            heading="Execution"
+            content={movement.movementExecution}
+          />
         </div>
 
         <aside className="movement-detail__sidebar">
@@ -219,29 +220,33 @@ export const MovementDetail = ({
         </aside>
       </div>
 
-      <section className="detail-panel detail-panel--warning">
-        <p className="detail-panel__label">Technique warning</p>
-        <h2>Common mistakes</h2>
-        <p>{movement.movementCommonMistakes}</p>
-      </section>
+      <MovementDetailCard
+        label="Technique warning"
+        heading="Common mistakes"
+        content={movement.movementCommonMistakes}
+        variant="warning"
+      />
 
       {((isLoggedIn && movement.movementResearchNotes) ||
         movement.movementExtraNotes) && (
           <div className="movement-detail__notes">
             {isLoggedIn && movement.movementResearchNotes && (
-              <section className="detail-panel">
-                <p className="detail-panel__label">Supporting information</p>
-                <h2>Research notes</h2>
-                <p>{movement.movementResearchNotes}</p>
-              </section>
+
+              <MovementDetailCard
+                label="Supporting information"
+                heading="Research notes"
+                content={movement.movementResearchNotes}
+              />
             )}
 
             {movement.movementExtraNotes && (
-              <section className="detail-panel">
-                <p className="detail-panel__label">Additional context</p>
-                <h2>Extra notes</h2>
-                <p>{movement.movementExtraNotes}</p>
-              </section>
+
+              <MovementDetailCard
+                label="Additional context"
+                heading="Extra notes"
+                content={movement.movementExtraNotes}
+              />
+
             )}
           </div>
         )}
