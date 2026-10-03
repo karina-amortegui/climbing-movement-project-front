@@ -47,6 +47,8 @@ export const Login = () => {
             <span>Required</span>
           </div>
 
+
+
           <input
             id="username"
             name="username"
@@ -57,6 +59,34 @@ export const Login = () => {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
+
+
+          {/* 
+
+            - react-hook-form
+            
+            function FormInput ({ inputName, type, error, errorMsg, ...rest }) {
+              return (
+                <div>
+                  <input 
+                    name={inputName}
+                    type={type}
+                    {...rest}
+                  />  
+                  {error && (
+                    <p color='error'>{errorMsg}</p>
+                  )}
+                </div>
+            }
+
+            <FormInput 
+              inputName=string
+              type=password|text|number
+              placeholder=string
+              error={usernameError}
+              errorMsg={needs to be 8 characters long}
+            />
+          */}
         </div>
 
         <div className="login-field">

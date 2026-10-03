@@ -31,6 +31,11 @@ export type MovementFormData = {
   exampleImages: ExampleImage[];
 };
 
+export type MovementFormSectionProps = {
+  formData: MovementFormData;
+  setFormData: React.Dispatch<React.SetStateAction<MovementFormData>>;
+}
+
 export type Movement = MovementFormData & {
   _id: string;
 };

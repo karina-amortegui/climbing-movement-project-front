@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { MovementListCard } from "./components/MovementListCard";
 import "./MovementList.css";
-import type { ExampleImage, Movement, MovementListProps } from "../../types/MovementTypes";
+import type { Movement, MovementListProps } from "../../types/MovementTypes";
 
 export const MovementList = ({
   movementRefreshKey,

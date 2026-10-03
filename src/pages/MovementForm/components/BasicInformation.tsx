@@ -1,14 +1,43 @@
-import type { MovementFormData } from "../../../types/MovementTypes"
+import type { MovementFormSectionProps } from "../../../types/MovementTypes";
 
+export const BasicInformation = ({
+  formData,
+  setFormData,
+}: MovementFormSectionProps) => {
 
-type BasicInformationType = {
-  formData: MovementFormData;
-  setFormData: ({ }: MovementFormData) => void;
-  handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}
+  function handleTextChange(
+    e: React.ChangeEvent<
+      HTMLInputElement |
+      HTMLTextAreaElement |
+      HTMLSelectElement
+    >
+  ) {
+    const { name, value } = e.target;
 
-export const BasicInformation = ({ formData, setFormData, handleInputChange }: BasicInformationType) => {
+    setFormData((previousFormData) => ({
+      ...previousFormData,
+      [name]: value,
+    }));
+  }
 
+  type MultiSelectField = "movementDemand" | "movementTerrain";
+
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const { value, checked } = e.target;
+    const name = e.target.name as MultiSelectField;
+
+    if (checked) {
+      setFormData((previousFormData) => ({
+        ...previousFormData,
+        [name]: [...previousFormData[name], value],
+      }));
+    } else {
+      setFormData((previousFormData) => ({
+        ...previousFormData,
+        [name]: previousFormData[name].filter((item) => item !== value),
+      }));
+    }
+  }
 
   return (
     <section className="movement-form__panel">
@@ -33,9 +62,7 @@ export const BasicInformation = ({ formData, setFormData, handleInputChange }: B
           className="movement-form__control"
           required
           value={formData.movementName}
-          onChange={(e) =>
-            setFormData({ ...formData, movementName: e.target.value })
-          }
+          onChange={handleTextChange}
         />
       </div>
 
@@ -50,9 +77,7 @@ export const BasicInformation = ({ formData, setFormData, handleInputChange }: B
           className="movement-form__control"
           required
           value={formData.movementSummary}
-          onChange={(e) =>
-            setFormData({ ...formData, movementSummary: e.target.value })
-          }
+          onChange={handleTextChange}
         ></textarea>
       </div>
 
@@ -68,12 +93,7 @@ export const BasicInformation = ({ formData, setFormData, handleInputChange }: B
           className="movement-form__control"
           required
           value={formData.movementDescription}
-          onChange={(e) =>
-            setFormData({
-              ...formData,
-              movementDescription: e.target.value,
-            })
-          }
+          onChange={handleTextChange}
         ></textarea>
       </div>
 
@@ -84,12 +104,7 @@ export const BasicInformation = ({ formData, setFormData, handleInputChange }: B
           id="execution"
           name="movementExecution"
           value={formData.movementExecution}
-          onChange={(e) =>
-            setFormData({
-              ...formData,
-              movementExecution: e.target.value,
-            })
-          }
+          onChange={handleTextChange}
           className="movement-form__control"
         >
           <option value="">Select a style</option>
@@ -238,5 +253,5 @@ export const BasicInformation = ({ formData, setFormData, handleInputChange }: B
         </div>
       </fieldset>
     </section>
-  )
+  );
 }
