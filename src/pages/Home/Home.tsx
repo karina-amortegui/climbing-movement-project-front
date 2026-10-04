@@ -2,28 +2,22 @@ import { Link } from "react-router-dom";
 import { CategoryCard } from "../../components/CategoryCard";
 import "./Home.css";
 
-//import { MovementCard } from "../../components";
+const categoryCards = [
+  {
+    label: "Explosive Power",
+    header: "Dynamic"
+  },
+  {
+    label: "Core & Tension",
+    header: "Static"
+  },
+  {
+    label: "Precision & Control",
+    header: "Technical"
+  }
+]
 
 export const Home = () => {
-
-  const categoryCards = [
-    {
-      label: "A",
-      header: "A"
-    },
-    {
-      label: "B",
-      header: "B"
-    },
-    {
-      label: "C",
-      header: "C"
-    },
-    {
-      label: "D",
-      header: "D"
-    }
-  ]
 
   return (
     <main className="home-page">
@@ -68,25 +62,6 @@ export const Home = () => {
               />
             ))
           }
-
-          {/* <CategoryCard
-            label="Explosive power"
-            header="Dynamic"
-          /> */}
-          {/* <article className="home-category-card">
-            <p className="home-category-card__label">Explosive power</p>
-            <h3>Dynamic</h3>
-          </article> */}
-
-          {/* <article className="home-category-card">
-            <p className="home-category-card__label">Core & tension</p>
-            <h3>Static</h3>
-          </article>
-
-          <article className="home-category-card">
-            <p className="home-category-card__label">Precision & control</p>
-            <h3>Technical</h3>
-          </article> */}
         </div>
       </section>
 
