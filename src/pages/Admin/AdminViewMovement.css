@@ -1,0 +1,92 @@
+.admin-movements {
+  padding-bottom: 3rem;
+}
+
+.admin-movements__title {
+  margin-bottom: 1.5rem;
+  font-size: clamp(3.5rem, 6vw, 5.5rem);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+}
+
+.admin-movements table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.admin-movements th,
+.admin-movements td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--color-border);
+  text-align: left;
+}
+
+.admin-movements th {
+  color: var(--color-primary);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.admin-movements td {
+  color: var(--color-text);
+  font-size: 0.9rem;
+}
+
+.admin-movements tbody tr:hover {
+  background: var(--color-surface-raised);
+}
+
+.admin-movements__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.admin-movements__eyebrow {
+  margin-bottom: 0.65rem;
+  color: var(--color-primary);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.admin-movements__title {
+  margin-bottom: 0.75rem;
+}
+
+.admin-movements__intro {
+  margin-bottom: 0;
+  color: var(--color-text-muted);
+}
+
+.admin-movements__back {
+  flex-shrink: 0;
+  padding: 0.7rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-small);
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.admin-movements__back:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+@media (max-width: 680px) {
+  .admin-movements__header {
+    flex-direction: column-reverse;
+    gap: 1.5rem;
+  }
+}

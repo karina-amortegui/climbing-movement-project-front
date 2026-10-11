@@ -15,6 +15,8 @@ import { AdminLayout } from "./layouts/AdminLayout";
 
 // Admin Protection
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import AdminMenu from "./pages/Admin/AdminMenu";
+import AdminViewMovements from "./pages/Admin/AdminViewMovements";
 
 function App() {
   const [movementRefreshKey, setMovementRefreshKey] = useState(0);
@@ -55,6 +57,12 @@ function App() {
       <Route element={<ProtectedRoute />}>
         <Route element={<AdminLayout />}>
           <Route
+            path="/admin/menu"
+            element={
+              <AdminMenu />
+            }
+          />
+          <Route
             path="/admin/movements/new"
             element={
               <MovementForm
@@ -73,6 +81,12 @@ function App() {
                   setMovementRefreshKey((key) => key + 1)
                 }
               />
+            }
+          />
+          <Route
+            path="/admin/movements/view"
+            element={
+              <AdminViewMovements />
             }
           />
         </Route>

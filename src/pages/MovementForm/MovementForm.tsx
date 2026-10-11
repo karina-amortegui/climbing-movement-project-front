@@ -174,6 +174,9 @@ export const MovementForm = ({
   return (
     <main className="movement-form-page">
       <header className="movement-form__header">
+        <button onClick={() => {
+          navigate(-1)
+        }}>{"< back"}</button>
         <p className="movement-form__eyebrow">Admin Workspace</p>
 
         <h1>{id ? "Edit Movement" : "Create Movement"}</h1>

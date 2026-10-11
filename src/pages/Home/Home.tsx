@@ -1,6 +1,10 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import type { Movement } from "../../types/MovementTypes";
 import { CategoryCard } from "../../components/CategoryCard";
 import "./Home.css";
+import { getFeaturedMovement } from "../../api/movements/repository";
+
 
 const categoryCards = [
   {
@@ -17,7 +21,67 @@ const categoryCards = [
   }
 ]
 
+// temporary manually selected MVP movement
+const featuredMovementId = "6a9f476fe0ffcbf3463ea026";
+
+
+/**
+ * // 1. Create a new XHR object
+const xhr = new XMLHttpRequest();
+
+// 2. Configure it (Method, URL, async)
+xhr.open("GET", "https://example.com", true);
+
+// 3. Handle the response once it loads
+xhr.onload = function () {
+    if (xhr.status >= 200 && xhr.status < 300) {
+        // Success! Process the response
+        console.log("Response:", xhr.responseText);
+    } else {
+        // Server returned an error code (e.g., 404 or 500)
+        console.error("HTTP Error:", xhr.status, xhr.statusText);
+    }
+};
+
+// 4. Handle networking/connectivity errors
+xhr.onerror = function () {
+    console.error("Network request failed.");
+};
+
+// 5. Send the request
+xhr.send();
+ */
+
+
+
+
 export const Home = () => {
+  const [featuredMovement, setFeaturedMovement] = useState<Movement | null>(null);
+
+  useEffect(() => {
+    async function fetchFeaturedMovement() {
+
+      try {
+        const response = await getFeaturedMovement();
+
+        // const response = await fetch(
+        //   // move this to appConfig file
+        //   `http://localhost:8787/movements/${featuredMovementId}`
+        // );
+
+        // if (!response.ok) {
+        //   throw new Error("Failed to load featured movement.");
+        // }
+
+        // const data = await response.json();
+        setFeaturedMovement(response.featured);
+
+      } catch (error) {
+        console.log(error);
+      };
+    }
+    fetchFeaturedMovement();
+  }, []);
 
   return (
     <main className="home-page">
@@ -69,6 +133,9 @@ export const Home = () => {
         <div className="home-section__heading">
           <p className="home-section__eyebrow">Featured</p>
           <h2>Movement spotlight</h2>
+          <pre>
+            {JSON.stringify(featuredMovement)}
+          </pre>
         </div>
 
         <div className="home-featured-card">

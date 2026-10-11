@@ -17,9 +17,9 @@ export const AdminLayout = () => {
 
   const headerActions = (
     <div className="site-header__actions">
-      <Link className="header-action-link" to="/admin/movements/new">
-        Add Movement
-      </Link>
+      {/* <Link className="header-action-link" to="/admin/movements/new">
+        Admin Menu
+      </Link> */}
 
       <button
         className="logout-button"

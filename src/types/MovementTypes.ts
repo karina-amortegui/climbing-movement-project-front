@@ -38,6 +38,7 @@ export type MovementFormSectionProps = {
 
 export type Movement = MovementFormData & {
   _id: string;
+  isFeatured: boolean;
 };
 
 export type MovementDetailProps = {

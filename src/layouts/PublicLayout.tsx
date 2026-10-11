@@ -21,8 +21,8 @@ export const PublicLayout = () => {
   const headerActions = isLoggedIn
     ? (
       <div className="site-header__actions">
-        <Link className="header-action-link" to="/admin/movements/new">
-          Add Movement
+        <Link className="header-action-link" to="/admin/menu">
+          Admin Menu
         </Link>
 
         <button

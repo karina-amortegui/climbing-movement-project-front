@@ -55,11 +55,11 @@
 
 .movement-detail__header h1 {
   max-width: 850px;
-  margin-bottom: 0.85rem;
+  margin-bottom: 1.5rem;
   overflow-wrap: anywhere;
-  font-size: clamp(2.5rem, 8vw, 5.25rem);
+  font-size: clamp(3.5rem, 6vw, 5.5rem);
   font-weight: 800;
-  letter-spacing: -0.065em;
+  letter-spacing: -0.05em;
   text-transform: uppercase;
 }
 
