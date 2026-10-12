@@ -1,4 +1,4 @@
-import { request } from '../api';
+import { request } from "../api";
 
 export const getMovementsList = async () => {
   try {
@@ -7,7 +7,7 @@ export const getMovementsList = async () => {
   } catch (error) {
     console.error("api/movements/repository: getMovementsList: error =", error);
   }
-}
+};
 
 export const getFeaturedMovement = async () => {
   try {
@@ -15,17 +15,31 @@ export const getFeaturedMovement = async () => {
     const response = await request("GET", "/movements/get-featured");
     return response;
   } catch (error) {
-    console.error("api/movements/repository: getFeaturedMovement: error =", error);
-    return null
+    console.error(
+      "api/movements/repository: getFeaturedMovement: error =",
+      error,
+    );
+    return null;
   }
-}
+};
 
-export const setFeaturedMovement = async () => {
+// sends the API request
+export const setFeaturedMovement = async (id: string, token: string) => {
   try {
-    const response = await request("PATCH", "/movements/set-featured");
+    const response = await request(
+      "PATCH",
+      `/movements/set-featured/${id}`,
+      undefined,
+      token,
+    );
+
     return response;
   } catch (error) {
-    console.error("api/movements/repository: setFeaturedMovement: error =", error);
-  }
-}
+    console.error(
+      "api/movements/repository: setFeaturedMovement: error =",
+      error,
+    );
 
+    throw error;
+  }
+};

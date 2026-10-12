@@ -5,10 +5,13 @@ const base = config.serverUrl; // http://localhost:8787/
 
 type Method = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
-export const request = async (method: Method, endpoint: string, body?: object) => {
-  // method - GET
-  // endpoint - movements/1
-  // body - undefined
+export const request = async (
+  method: Method, 
+  endpoint: string, 
+  body?: object,
+  token?: string
+) => {
+ 
   endpoint = base + endpoint;
   
   console.log("api/api.ts: request: endpoint=", endpoint);
@@ -23,6 +26,11 @@ export const request = async (method: Method, endpoint: string, body?: object) =
   }
 
   if(body) options.body = JSON.stringify(body)
+
+  if(token) options.headers = {
+    ...options.headers,
+    Authorization: `Bearer ${token}`
+  };
 
   const res = await fetch(endpoint, options);
 

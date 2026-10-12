@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getMovementsList } from "../../api/movements/repository";
+import { getMovementsList, setFeaturedMovement } from "../../api/movements/repository";
 import type { Movement } from "../../types/MovementTypes";
 import "./AdminViewMovement.css";
 
@@ -15,13 +15,34 @@ const useGetMovementsList = () => {
     }
     movementsResponse()
   }, [])
-  return movements
+  return { movements, setMovements };
 }
 
 export default function AdminViewMovements() {
   const navigate = useNavigate();
+  const { movements, setMovements } = useGetMovementsList();
 
-  const movements = useGetMovementsList();
+  // handles the users's action
+  const handleSetFeatured = async (id: string) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
+    try {
+      await setFeaturedMovement(id, token);
+      setMovements((prevMovements) =>
+        prevMovements.map((movement) => ({
+          ...movement,
+          isFeatured: movement._id === id
+        }))
+      );
+    } catch (error) {
+      console.error("Failed to set featured movement:", error);
+    }
+  };
 
   return (
     <main className="admin-movements">
@@ -54,7 +75,7 @@ export default function AdminViewMovements() {
           <thead>
             <tr >
               <th>#</th>
-              <th>Movement Name</th>
+              <th>Movement</th>
               <th>Execution</th>
               <th>Status</th>
               <th>Featured</th>
@@ -69,7 +90,18 @@ export default function AdminViewMovements() {
                 <td>{movement.movementExecution}</td>
                 <td>{movement.movementStatus}</td>
                 <td>{movement.isFeatured ? "Yes" : "No"}</td>
-                <td>Actions coming soon</td>
+                <td>
+                  {movement.isFeatured ? (
+                    <span>Current</span>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => handleSetFeatured(movement._id)}
+                    >
+                      Set Featured
+                    </button>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -80,3 +112,4 @@ export default function AdminViewMovements() {
     </main>
   )
 }
+
