@@ -24,13 +24,12 @@ export const getFeaturedMovement = async () => {
 };
 
 // sends the API request
-export const setFeaturedMovement = async (id: string, token: string) => {
+export const setFeaturedMovement = async (id: string) => {
   try {
     const response = await request(
       "PATCH",
       `/movements/set-featured/${id}`,
       undefined,
-      token,
     );
 
     return response;

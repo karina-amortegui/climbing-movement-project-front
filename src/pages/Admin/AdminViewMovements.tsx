@@ -4,9 +4,17 @@ import { getMovementsList, setFeaturedMovement } from "../../api/movements/repos
 import type { Movement } from "../../types/MovementTypes";
 import "./AdminViewMovement.css";
 
+import { EN } from "../../i18n/resources";
+
+// handle if someone pressed button twice ( throttle request ) ( disable button press while request is in progress)
+// -- create sleep function ( it will help throttle )
+// add loading state
+
+
 
 const useGetMovementsList = () => {
   const [movements, setMovements] = useState<Movement[]>([])
+
 
   useEffect(() => {
     const movementsResponse = async () => {
@@ -18,21 +26,29 @@ const useGetMovementsList = () => {
   return { movements, setMovements };
 }
 
+// const useLoadingState = () => {
+
+
+// }
+
 export default function AdminViewMovements() {
+  // state
+  const [featureSetLoading, setFeatureSetLoading] = useState(false);
+
+  // hooks
   const navigate = useNavigate();
   const { movements, setMovements } = useGetMovementsList();
 
+
+
+  // handlers
   // handles the users's action
   const handleSetFeatured = async (id: string) => {
-    const token = localStorage.getItem("token");
 
-    if (!token) {
-      navigate("/login");
-      return;
-    }
+    setFeatureSetLoading(true)
 
     try {
-      await setFeaturedMovement(id, token);
+      await setFeaturedMovement(id);
       setMovements((prevMovements) =>
         prevMovements.map((movement) => ({
           ...movement,
@@ -41,19 +57,25 @@ export default function AdminViewMovements() {
       );
     } catch (error) {
       console.error("Failed to set featured movement:", error);
+    } finally {
+      setFeatureSetLoading(false)
     }
   };
+
+  // if (!movements.length) {
+  //   return (<div>loading</div>)
+  // }
 
   return (
     <main className="admin-movements">
       <div className="admin-movements__header">
         <div>
           <p className="admin-movements__eyebrow">
-            ADMINISTRATION
+            {EN.ADMIN}
           </p>
 
           <h1 className="admin-movements__title">
-            MANAGE MOVEMENTS
+            {EN.AdminViewMovements.header}
           </h1>
 
           <p className="admin-movements__intro">
@@ -64,6 +86,7 @@ export default function AdminViewMovements() {
         <button
           className="admin-movements__back"
           onClick={() => navigate(-1)}
+
         >
           ← Back
         </button>
@@ -97,6 +120,8 @@ export default function AdminViewMovements() {
                     <button
                       type="button"
                       onClick={() => handleSetFeatured(movement._id)}
+                      disabled={featureSetLoading}
+
                     >
                       Set Featured
                     </button>
