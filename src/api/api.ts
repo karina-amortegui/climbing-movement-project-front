@@ -9,7 +9,7 @@ export const request = async (
   endpoint: string,
   body?: object,
 ) => {
-  // const { bodyl, token} = optional
+  // const { body, token} = optional
 
   endpoint = base + endpoint;
 

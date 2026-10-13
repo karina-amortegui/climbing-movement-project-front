@@ -63,6 +63,7 @@ export const Home = () => {
 
       try {
         const response = await getFeaturedMovement();
+        console.log("Featured movement API response:", response);
 
         // const response = await fetch(
         //   // move this to appConfig file
@@ -133,9 +134,6 @@ export const Home = () => {
         <div className="home-section__heading">
           <p className="home-section__eyebrow">Featured</p>
           <h2>Movement spotlight</h2>
-          <pre>
-            {JSON.stringify(featuredMovement)}
-          </pre>
         </div>
 
         <div className="home-featured-card">
@@ -145,12 +143,8 @@ export const Home = () => {
           />
 
           <div className="home-featured-card__content">
-            <h3>Featured movement coming soon</h3>
-            <p>
-              This area will highlight a movement once the launch media content is
-              ready.
-            </p>
-
+            <h3>{featuredMovement?.movementName ?? "Featured movement coming soon"}</h3>
+            <p>{featuredMovement?.movementSummary ?? "Movement summary coming soon."}</p>
             <Link to="/movements">Explore the movement library</Link>
           </div>
         </div>
