@@ -30,6 +30,14 @@ export const MovementListCard = ({
       <div className="movement-card__content">
         <p className="movement-card__label">Movement</p>
         <h2>{movement.movementName}</h2>
+        {/* temporary */}
+        <img src={movement.exampleImages[movement.exampleImages.length - 1]?.url ?? "FIX ME"}
+          style={{
+            objectFit: "contain",
+
+          }}
+        />
+        {/*  */}
         <p className="movement-card__summary">
           {movement.movementSummary}
         </p>

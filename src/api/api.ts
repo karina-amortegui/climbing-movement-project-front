@@ -4,12 +4,16 @@ const base = config.serverUrl; // http://localhost:8787/
 
 type Method = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
+type RequestOptions = {
+  body?: object;
+};
+
 export const request = async (
   method: Method,
   endpoint: string,
-  body?: object,
+  optional: RequestOptions = {},
 ) => {
-  // const { body, token} = optional
+  const { body } = optional;
 
   endpoint = base + endpoint;
 
@@ -36,13 +40,14 @@ export const request = async (
 
   const res = await fetch(endpoint, options);
 
+  if (res.status === 401) {
+    window.dispatchEvent(new Event("auth:unauthorized"));
+    throw new Error("Unauthorized");
+  }
+
   if (!res.ok) {
     throw new Error("Network Error");
   }
-
-  // handle 401 unauthorized. ( which would mean -> token expired )
-  // res.status === 401
-  // modal relogin popup
 
   const json = await res.json();
   return json;
