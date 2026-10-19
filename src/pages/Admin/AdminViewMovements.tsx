@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getMovementsList, setFeaturedMovement } from "../../api/movements/repository";
+import { getAdminMovementsList, setFeaturedMovement } from "../../api/movements/repository";
 import type { Movement } from "../../types/MovementTypes";
 import "./AdminViewMovement.css";
 
@@ -18,7 +18,7 @@ const useGetMovementsList = () => {
 
   useEffect(() => {
     const movementsResponse = async () => {
-      const movementsRes = await getMovementsList();
+      const movementsRes = await getAdminMovementsList();
       setMovements(movementsRes.data)
     }
     movementsResponse()

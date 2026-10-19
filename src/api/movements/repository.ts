@@ -9,6 +9,10 @@ export const getMovementsList = async () => {
   }
 };
 
+export const getAdminMovementsList = async () => {
+  return await request("GET", "/movements/admin/all");
+};
+
 export const getFeaturedMovement = async () => {
   try {
     // const response = await request("GET", `/movements/${movementId}`);
