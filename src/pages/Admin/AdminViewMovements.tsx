@@ -1,5 +1,5 @@
-import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getAdminMovementsList, setFeaturedMovement } from "../../api/movements/repository";
 import type { Movement } from "../../types/MovementTypes";
 import "./AdminViewMovement.css";
@@ -107,7 +107,10 @@ export default function AdminViewMovements() {
           </thead>
           <tbody>
             {movements.map((movement, index) => (
-              <tr key={movement._id}>
+              <tr key={movement._id} onClick={() => {
+                console.log("HELLO WORLD")
+                navigate(`/admin/movements/${movement._id}/edit`)
+              }}>
                 <td>{index + 1}</td>
                 <td>{movement.movementName}</td>
                 <td>{movement.movementExecution}</td>

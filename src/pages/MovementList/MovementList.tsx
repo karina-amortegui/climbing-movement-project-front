@@ -4,6 +4,9 @@ import { MovementListCard } from "./components/MovementListCard";
 import "./MovementList.css";
 import type { Movement, MovementListProps } from "../../types/MovementTypes";
 
+// TODO: Add Pagination -> fetch movementList by 10
+//change to the request we created
+
 export const MovementList = ({
   movementRefreshKey,
 }: MovementListProps) => {

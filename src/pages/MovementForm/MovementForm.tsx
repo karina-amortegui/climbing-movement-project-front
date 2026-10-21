@@ -37,6 +37,35 @@ type MovementFormProps = {
   onMovementChange: () => void;
 };
 
+// TODO: make this better
+function validateMovementData(movement: MovementFormData) {
+  let valid = true;
+  for (const key in movement) {
+    const typedKey = key as keyof MovementFormData;
+
+    const currentValue = movement[typedKey];
+
+    if (Array.isArray(currentValue)) {
+      const filter = currentValue.filter(v => v === "UNKNOWN");
+      if (filter.length) {
+        valid = false;
+        break
+      }
+    } else {
+      if (!currentValue || /UNKNOWN/.test(currentValue)) {
+        if (typedKey === "movementResearchNotes" || typedKey === "movementExtraNotes") {
+          continue
+        } else {
+          valid = false
+          break
+        }
+
+      }
+    }
+  }
+  return valid
+}
+
 export const MovementForm = ({
   onMovementChange,
 }: MovementFormProps) => {
@@ -68,9 +97,15 @@ export const MovementForm = ({
 
     const movementData = { ...formData, movementTags: tagsArray };
     console.log("movementData =", movementData);
+    if (movementData.movementStatus === "published" && !validateMovementData(movementData)) {
+      return alert("cannot publish incomplete data")
+    }
 
     try {
       const method = id ? "PATCH" : "POST";
+
+
+      // TODO: CHANGE TO REQUEST function we created
       const url = id
         ? `${import.meta.env.VITE_API_URL}/movements/${id}`
         : `${import.meta.env.VITE_API_URL}/movements`;
@@ -96,6 +131,7 @@ export const MovementForm = ({
       if (!response.ok) {
         throw new Error("Server response unsuccessful");
       }
+      // ______________________________________________
 
       const result = await response.json();
       console.log("server response =", result);
