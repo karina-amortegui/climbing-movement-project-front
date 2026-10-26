@@ -14,6 +14,7 @@ import type { MovementFormData } from "../../types/MovementTypes";
 
 // Extra Imports
 import "./MovementForm.css";
+import { request } from "../../api/api";
 
 const emptyForm: MovementFormData = {
   movementName: "",
@@ -122,34 +123,11 @@ export const MovementForm = ({ onMovementChange }: MovementFormProps) => {
 
     try {
       const method = id ? "PATCH" : "POST";
-
-      // TODO: CHANGE TO REQUEST function we created
-      const url = id
-        ? `${import.meta.env.VITE_API_URL}/movements/${id}`
-        : `${import.meta.env.VITE_API_URL}/movements`;
-
-      const token = localStorage.getItem("token");
-
-      const response = await fetch(url, {
-        method: method,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(movementData),
+      const endpoint = id ? `/movements/${id}` : "/movements";
+      const result = await request(method, endpoint, {
+        body: movementData,
       });
 
-      if (response.status === 401) {
-        setStatusMessage("Please log in to make changes.");
-        return;
-      }
-
-      if (!response.ok) {
-        throw new Error("Server response unsuccessful");
-      }
-      // ______________________________________________
-
-      const result = await response.json();
       console.log("server response =", result);
 
       onMovementChange();
@@ -185,15 +163,7 @@ export const MovementForm = ({ onMovementChange }: MovementFormProps) => {
 
     async function fetchMovement() {
       try {
-        const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/movements/${id}`,
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to load movement");
-        }
-
-        const data = await response.json();
+        const data = await request("GET", `/movements/${id}`);
 
         setFormData({
           movementName: data.data.movementName,
