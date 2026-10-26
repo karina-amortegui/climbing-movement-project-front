@@ -1,4 +1,4 @@
-import type { MovementFormSectionProps } from "../../../types/MovementTypes";
+import type { MovementFormData, MovementFormSectionProps } from "../../../types/MovementTypes";
 
 type OrganizationProps = MovementFormSectionProps & {
   tagInput: string;
@@ -13,7 +13,7 @@ export const Organization = ({
 }: OrganizationProps) => {
 
   function handleStatusChange(e: React.ChangeEvent<HTMLSelectElement>) {
-    const { value } = e.target;
+    const value = e.target.value as MovementFormData["movementStatus"];
 
     setFormData((previousFormData) => ({
       ...previousFormData,

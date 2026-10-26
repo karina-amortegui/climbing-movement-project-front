@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-// Form Components 
+// Form Components
 import { BasicInformation } from "./components/BasicInformation";
 import { TeachingInformation } from "./components/TeachingInformation";
 import { Organization } from "./components/Organization";
@@ -15,8 +15,7 @@ import type { MovementFormData } from "../../types/MovementTypes";
 // Extra Imports
 import "./MovementForm.css";
 
-
-const emptyForm = {
+const emptyForm: MovementFormData = {
   movementName: "",
   movementSummary: "",
   movementDescription: "",
@@ -37,38 +36,45 @@ type MovementFormProps = {
   onMovementChange: () => void;
 };
 
-// TODO: make this better
 function validateMovementData(movement: MovementFormData) {
   let valid = true;
   for (const key in movement) {
     const typedKey = key as keyof MovementFormData;
-
     const currentValue = movement[typedKey];
 
     if (Array.isArray(currentValue)) {
-      const filter = currentValue.filter(v => v === "UNKNOWN");
-      if (filter.length) {
-        valid = false;
-        break
-      }
-    } else {
-      if (!currentValue || /UNKNOWN/.test(currentValue)) {
-        if (typedKey === "movementResearchNotes" || typedKey === "movementExtraNotes") {
-          continue
-        } else {
-          valid = false
-          break
-        }
+      const isRequiredArray =
+        typedKey === "movementDemand" || typedKey === "movementTerrain";
 
+      const hasUnknown = currentValue.some(
+        (value) =>
+          typeof value === "string" && value.toUpperCase().includes("UNKNOWN"),
+      );
+
+      if ((isRequiredArray && currentValue.length === 0) || hasUnknown) {
+        valid = false;
+        break;
+      }
+    } else if (typeof currentValue === "string") {
+      const isOptional =
+        typedKey === "movementResearchNotes" ||
+        typedKey === "movementExtraNotes";
+
+      const isEmpty = currentValue.trim().length === 0;
+
+      const hasUnknown = currentValue.trim().toUpperCase() === "UNKNOWN";
+
+      if ((!isOptional && isEmpty) || hasUnknown) {
+        valid = false;
+        break;
       }
     }
   }
-  return valid
+
+  return valid;
 }
 
-export const MovementForm = ({
-  onMovementChange,
-}: MovementFormProps) => {
+export const MovementForm = ({ onMovementChange }: MovementFormProps) => {
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -97,13 +103,25 @@ export const MovementForm = ({
 
     const movementData = { ...formData, movementTags: tagsArray };
     console.log("movementData =", movementData);
-    if (movementData.movementStatus === "published" && !validateMovementData(movementData)) {
-      return alert("cannot publish incomplete data")
+
+    if (
+      movementData.movementStatus !== "draft" &&
+      movementData.movementStatus !== "needs-review" &&
+      movementData.movementStatus !== "published"
+    ) {
+      setStatusMessage("Please select Draft or Published.");
+      return;
+    }
+
+    if (
+      movementData.movementStatus === "published" &&
+      !validateMovementData(movementData)
+    ) {
+      return alert("cannot publish incomplete data");
     }
 
     try {
       const method = id ? "PATCH" : "POST";
-
 
       // TODO: CHANGE TO REQUEST function we created
       const url = id
@@ -112,16 +130,14 @@ export const MovementForm = ({
 
       const token = localStorage.getItem("token");
 
-      const response = await fetch(url,
-        {
-          method: method,
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(movementData),
-        }
-      );
+      const response = await fetch(url, {
+        method: method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(movementData),
+      });
 
       if (response.status === 401) {
         setStatusMessage("Please log in to make changes.");
@@ -151,7 +167,6 @@ export const MovementForm = ({
       if (id) {
         navigate(`/movements/${id}`);
       }
-
     } catch (err) {
       console.log(err);
       const failureMessage = id
@@ -198,7 +213,6 @@ export const MovementForm = ({
         });
 
         setTagInput(data.data.movementTags.join(", "));
-
       } catch (err) {
         console.error(err);
         setStatusMessage("Failed to load movement. Please try again.");
@@ -210,9 +224,13 @@ export const MovementForm = ({
   return (
     <main className="movement-form-page">
       <header className="movement-form__header">
-        <button onClick={() => {
-          navigate(-1)
-        }}>{"< back"}</button>
+        <button
+          onClick={() => {
+            navigate(-1);
+          }}
+        >
+          {"< back"}
+        </button>
         <p className="movement-form__eyebrow">Admin Workspace</p>
 
         <h1>{id ? "Edit Movement" : "Create Movement"}</h1>
@@ -228,18 +246,13 @@ export const MovementForm = ({
         id="movement-form"
         className="movement-form"
         onSubmit={createMovement}
+        noValidate
       >
         {/* Basic Information => BasicInformation.tsx */}
-        <BasicInformation
-          formData={formData}
-          setFormData={setFormData}
-        />
+        <BasicInformation formData={formData} setFormData={setFormData} />
 
         {/* Teaching Information => TeachingInformation.tsx */}
-        <TeachingInformation
-          formData={formData}
-          setFormData={setFormData}
-        />
+        <TeachingInformation formData={formData} setFormData={setFormData} />
 
         {/* Organization => Organization.tsx */}
         <Organization
@@ -250,16 +263,10 @@ export const MovementForm = ({
         />
 
         {/* Images/Media => ImagesMedia.tsx */}
-        <ImagesMedia
-          formData={formData}
-          setFormData={setFormData}
-        />
+        <ImagesMedia formData={formData} setFormData={setFormData} />
 
         {/* Internal Notes => InternalNotes.tsx */}
-        <InternalNotes
-          formData={formData}
-          setFormData={setFormData}
-        />
+        <InternalNotes formData={formData} setFormData={setFormData} />
 
         <button
           id="submitButton"
@@ -268,15 +275,10 @@ export const MovementForm = ({
         >
           {id ? "Update Movement" : "Create Movement"}
         </button>
-        {
-          statusMessage && (
-            <p className="movement-form__status">
-              {statusMessage}
-            </p>
-          )
-        }
-      </form >
-    </main >
+        {statusMessage && (
+          <p className="movement-form__status">{statusMessage}</p>
+        )}
+      </form>
+    </main>
   );
 };
-

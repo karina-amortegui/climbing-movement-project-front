@@ -75,7 +75,6 @@ export const BasicInformation = ({
           id="summary"
           name="movementSummary"
           className="movement-form__control"
-          required
           value={formData.movementSummary}
           onChange={handleTextChange}
         ></textarea>
@@ -91,7 +90,6 @@ export const BasicInformation = ({
           name="movementDescription"
           rows={5}
           className="movement-form__control"
-          required
           value={formData.movementDescription}
           onChange={handleTextChange}
         ></textarea>

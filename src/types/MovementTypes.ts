@@ -21,7 +21,7 @@ export type MovementFormData = {
   movementExecution: string;
   movementDemand: string[];
   movementTerrain: string[];
-  movementStatus: string;
+  movementStatus: "" | "draft" | "needs-review" | "published";
   movementWhenToUse: string;
   movementHowToPerform: string;
   movementCommonMistakes: string;
@@ -34,7 +34,7 @@ export type MovementFormData = {
 export type MovementFormSectionProps = {
   formData: MovementFormData;
   setFormData: React.Dispatch<React.SetStateAction<MovementFormData>>;
-}
+};
 
 export type Movement = MovementFormData & {
   _id: string;
@@ -45,5 +45,3 @@ export type MovementDetailProps = {
   movementRefreshKey: number;
   onDelete: () => void;
 };
-
-
