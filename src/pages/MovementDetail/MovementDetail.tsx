@@ -3,6 +3,7 @@ import { MovementDetailCard } from "./components/MovementDetailCard";
 import { MovementDetailChipPanel } from "./components/MovementDetailChipPanel";
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { request } from "../../api/api";
 import "./MovementDetail.css";
 
 export const MovementDetail = ({
@@ -14,8 +15,6 @@ export const MovementDetail = ({
   const [movement, setMovement] = useState<Movement | null>(null);
   const [statusMessage, setStatusMessage] = useState("");
   const [isDeleted, setIsDeleted] = useState(false);
-
-  // Controls admin-only UI visibility; backend JWT middleware enforces actual authorization.
   const isLoggedIn = Boolean(localStorage.getItem("token"));
 
   useEffect(() => {
@@ -28,24 +27,16 @@ export const MovementDetail = ({
       setStatusMessage("");
 
       try {
-        const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/movements/${id}`,
-        );
-
-        if (response.status === 404) {
-          setStatusMessage("Movement not found.");
-          return;
-        }
-
-        if (!response.ok) {
-          throw new Error("Server response unsuccessful");
-        }
-
-        const data = await response.json();
+        const data = await request("GET", `/movements/${id}`);
         setMovement(data.data);
       } catch (error) {
         console.error(error);
-        setStatusMessage("Failed to load movement.");
+
+        if (error instanceof Error && error.message === "HTTP 404") {
+          setStatusMessage("Movement not found.");
+        } else {
+          setStatusMessage("Failed to load movement.");
+        }
       }
     }
 
@@ -65,33 +56,21 @@ export const MovementDetail = ({
       return;
     }
 
-    const token = localStorage.getItem("token");
-
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/movements/${movement._id}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-
-      if (response.status === 401 || response.status === 403) {
-        setStatusMessage("Please log in to make changes.");
-        return;
-      }
-
-      if (!response.ok) {
-        throw new Error("Failed to delete movement");
-      }
+      await request("DELETE", `/movements/${movement._id}`);
 
       setIsDeleted(true);
       setMovement(null);
       onDelete();
     } catch (error) {
       console.error(error);
+
+      if (error instanceof Error && (error.message === "Unauthorized" || error.message === "HTTP 403")) {
+        setStatusMessage("Please log in to make changes.");
+      } else {
+        setStatusMessage("Failed to delete movement.")
+      }
+
       setStatusMessage("Failed to delete movement.");
     }
   }

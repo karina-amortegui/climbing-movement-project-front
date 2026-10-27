@@ -46,7 +46,7 @@ export const request = async (
   }
 
   if (!res.ok) {
-    throw new Error("Network Error");
+    throw new Error(`HTTP ${res.status}`);
   }
 
   const json = await res.json();

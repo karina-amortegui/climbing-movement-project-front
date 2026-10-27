@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { MovementListCard } from "./components/MovementListCard";
 import "./MovementList.css";
 import type { Movement, MovementListProps } from "../../types/MovementTypes";
+import { request } from "../../api/api";
 
 // TODO: Add Pagination -> fetch movementList by 10
 //change to the request we created
@@ -21,16 +22,7 @@ export const MovementList = ({
       setError("");
 
       try {
-        const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/movements`,
-        );
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.message || "Failed to load movements.");
-        }
-
+        const data = await request("GET", "/movements");
         setMovements(data.data);
       } catch {
         setError("Failed to load movements.");
