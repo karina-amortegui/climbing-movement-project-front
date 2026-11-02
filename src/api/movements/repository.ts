@@ -9,8 +9,31 @@ export const getMovementsList = async () => {
   }
 };
 
-export const getAdminMovementsList = async () => {
-  return await request("GET", "/movements/admin/all");
+export interface IGetMovementsListPayload {
+  currentPage?: number;
+  nextOrPrev?: "next" | "prev";
+  queryBy?: string[];
+  orderBy?: string;
+  order?: "ASC" | "DESC";
+}
+
+export const getAdminMovementsList = async (
+  payload?: IGetMovementsListPayload,
+) => {
+  // const { currentPage = 1 } = payload;
+
+  // const {
+  //   currentPage = 1,
+  //   nextOrPrev = "next",
+  //   queryBy = null,
+  //   orderBy = null,
+  //   order = "DESC"
+
+  // } = payload
+
+  const endpoint = payload ? "/movements/admin/all" : `/movements/admin/all`;
+
+  return await request("GET", endpoint);
 };
 
 export const getFeaturedMovement = async () => {
@@ -41,3 +64,7 @@ export const setFeaturedMovement = async (id: string) => {
     throw error;
   }
 };
+
+// get movement by id ( switch request in useEffect in MovementForm with this )
+// export const getMovementById = async (id) => {
+// }

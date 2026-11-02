@@ -13,9 +13,11 @@ export const request = async (
   endpoint: string,
   optional: RequestOptions = {},
 ) => {
+  // endpoint - /movements/admin/all
   const { body } = optional;
 
   endpoint = base + endpoint;
+  // http://localhost:8787/movements/admin/all
 
   console.log("api/api.ts: request: endpoint=", endpoint);
 
@@ -41,7 +43,18 @@ export const request = async (
   const res = await fetch(endpoint, options);
 
   if (res.status === 401) {
-    window.dispatchEvent(new Event("auth:unauthorized"));
+    window.dispatchEvent(
+      new Event("auth:unauthorized"),
+      // new CustomEvent("auth:unauthorized", {
+      //   detail: {
+      //     retry: await request(
+      //       method,
+      //       endpoint.slice(endpoint.indexOf(base.slice(-4)) + 4),
+      //       optional,
+      //     ),
+      //   },
+      // }),
+    );
     throw new Error("Unauthorized");
   }
 

@@ -1,29 +1,58 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAdminMovementsList, setFeaturedMovement } from "../../api/movements/repository";
+import { getAdminMovementsList, setFeaturedMovement, type IGetMovementsListPayload } from "../../api/movements/repository";
 import type { Movement } from "../../types/MovementTypes";
 import "./AdminViewMovement.css";
 
 import { EN } from "../../i18n/resources";
+import { request } from "../../api/api";
 
 // handle if someone pressed button twice ( throttle request ) ( disable button press while request is in progress)
 // -- create sleep function ( it will help throttle )
 // add loading state
 
-
-
-const useGetMovementsList = () => {
+const useGetMovementsList = (payload?: IGetMovementsListPayload) => {
   const [movements, setMovements] = useState<Movement[]>([])
-
+  const [error, setError] = useState<string | null>(null);
+  const [responseData, setResponseData] = useState<{
+    currentPage: number,
+    prevPageUrl: string,
+    nextPageUrl: string,
+    totalPages: number,
+    total: number
+    pageSize: number
+  }>({
+    currentPage: 0,
+    prevPageUrl: "",
+    nextPageUrl: "",
+    totalPages: 0,
+    total: 0,
+    pageSize: 0
+  })
 
   useEffect(() => {
     const movementsResponse = async () => {
-      const movementsRes = await getAdminMovementsList();
-      setMovements(movementsRes.data)
-    }
-    movementsResponse()
-  }, [])
-  return { movements, setMovements };
+
+      try {
+        const movementsRes = await getAdminMovementsList(payload);
+        setMovements(movementsRes.data)
+        setResponseData({
+          currentPage: movementsRes.currentPage,
+          prevPageUrl: movementsRes.prevPageUrl,
+          nextPageUrl: movementsRes.nextPageUrl,
+          totalPages: movementsRes.totalPages,
+          total: movementsRes.total,
+          pageSize: movementsRes.pageSize
+        });
+      } catch (error) {
+        console.error("Failed to fetch admin movements:", error);
+        setError("Unable to load movements. Please try again.");
+      }
+    };
+    movementsResponse();
+  }, []);
+
+  return { movements, setMovements, responseData, setResponseData, error };
 }
 
 // const useLoadingState = () => {
@@ -37,7 +66,7 @@ export default function AdminViewMovements() {
 
   // hooks
   const navigate = useNavigate();
-  const { movements, setMovements } = useGetMovementsList();
+  const { movements, setMovements, responseData, setResponseData, error } = useGetMovementsList();
 
 
 
@@ -66,6 +95,16 @@ export default function AdminViewMovements() {
   //   return (<div>loading</div>)
   // }
 
+  const handleMouseEnter = (e: any) => {
+    e.currentTarget.style.cursor = 'pointer';
+    e.currentTarget.style.color = "#074666";
+  };
+
+  const handleMouseLeave = (e: any) => {
+    e.currentTarget.style.cursor = 'default';
+    e.currentTarget.style.color = "#00f5ff";
+  };
+
   return (
     <main className="admin-movements">
       <div className="admin-movements__header">
@@ -91,14 +130,25 @@ export default function AdminViewMovements() {
           ← Back
         </button>
       </div>
-      {movements.length > 0 && movements[0] != null && (
+      {/* filter section */}
+      {error && (
+        <p role="alert" className="admin-movements__error">
+          {error}
+        </p>
+      )}
+      {movements?.length > 0 && movements[0] != null && (
         <table
           style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}
         >
           <thead>
             <tr >
               <th>#</th>
-              <th>Movement</th>
+              <th
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                onClick={() => {
+                  console.log("HELLO WORLD")
+                }}>Movement</th>
               <th>Execution</th>
               <th>Status</th>
               <th>Featured</th>
@@ -122,7 +172,11 @@ export default function AdminViewMovements() {
                   ) : (
                     <button
                       type="button"
-                      onClick={() => handleSetFeatured(movement._id)}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleSetFeatured(movement._id);
+                      }}
+
                       disabled={featureSetLoading}
 
                     >
@@ -136,7 +190,65 @@ export default function AdminViewMovements() {
         </table>
       )
       }
+      <pre>
+        {JSON.stringify(responseData, null, 2)}
+      </pre>
+      <div style={{
+        display: "flex",
+        justifyContent: "space-around",
+        alignItems: "center",
+        maxWidth: 400,
+        margin: "auto"
+      }}>
+        <span>
+          <button
+            disabled={responseData.currentPage === 1}
+            onClick={async () => {
+              const movementsList = await request("GET", responseData.prevPageUrl)
+              setMovements(movementsList.data)
+              setResponseData({
+                currentPage: movementsList.currentPage,
+                prevPageUrl: movementsList.prevPageUrl,
+                nextPageUrl: movementsList.nextPageUrl,
+                totalPages: movementsList.totalPages,
+                total: movementsList.total,
+                pageSize: movementsList.pageSize
+              })
 
+            }}>
+            {"<"}
+          </button>
+        </span>
+        {[...Array(responseData.totalPages).keys()].map((page, idx) => {
+          return (
+            <span key={`movements-page-${idx}`}>
+              <button onClick={async () => {
+                // const endpoint = `/movements/admin/all?page=${String(page + 1)}&limit=${responseData.pageSize}`
+              }}>
+                {page + 1}
+              </button>
+            </span>
+          )
+        })}
+        <span>
+          <button
+            disabled={responseData.currentPage === responseData.totalPages}
+            onClick={async () => {
+              const movementsList = await request("GET", responseData.nextPageUrl)
+              setMovements(movementsList.data)
+              setResponseData({
+                currentPage: movementsList.currentPage,
+                prevPageUrl: movementsList.prevPageUrl,
+                nextPageUrl: movementsList.nextPageUrl,
+                totalPages: movementsList.totalPages,
+                total: movementsList.total,
+                pageSize: movementsList.pageSize
+              })
+
+            }}
+          >{">"}</button>
+        </span>
+      </div>
     </main>
   )
 }

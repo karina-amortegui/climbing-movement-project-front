@@ -27,6 +27,8 @@ export const App = () => {
   useEffect(() => {
     const handleUnauthorized = () => {
       setShowReLogin(true);
+      // const customEvent = e as CustomEvent<any>
+      // customEvent.detail.retry()
     };
 
     window.addEventListener("auth:unauthorized", handleUnauthorized);
