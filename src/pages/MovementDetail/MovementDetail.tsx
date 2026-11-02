@@ -70,8 +70,6 @@ export const MovementDetail = ({
       } else {
         setStatusMessage("Failed to delete movement.")
       }
-
-      setStatusMessage("Failed to delete movement.");
     }
   }
 
@@ -206,7 +204,7 @@ export const MovementDetail = ({
         variant="warning"
       />
 
-      {((isLoggedIn && movement.movementResearchNotes) ||
+      {isLoggedIn && (movement.movementResearchNotes ||
         movement.movementExtraNotes) && (
           <div className="movement-detail__notes">
             {isLoggedIn && movement.movementResearchNotes && (

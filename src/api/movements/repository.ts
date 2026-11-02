@@ -20,6 +20,9 @@ export interface IGetMovementsListPayload {
 export const getAdminMovementsList = async (
   payload?: IGetMovementsListPayload,
 ) => {
+  const currentPage = payload?.currentPage ?? 1;
+
+  const endpoint = `/movements/admin/all?page=${currentPage}&limit=10`;
   // const { currentPage = 1 } = payload;
 
   // const {
@@ -30,8 +33,6 @@ export const getAdminMovementsList = async (
   //   order = "DESC"
 
   // } = payload
-
-  const endpoint = payload ? "/movements/admin/all" : `/movements/admin/all`;
 
   return await request("GET", endpoint);
 };

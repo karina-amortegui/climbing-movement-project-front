@@ -5,7 +5,6 @@ import type { Movement } from "../../types/MovementTypes";
 import "./AdminViewMovement.css";
 
 import { EN } from "../../i18n/resources";
-import { request } from "../../api/api";
 
 // handle if someone pressed button twice ( throttle request ) ( disable button press while request is in progress)
 // -- create sleep function ( it will help throttle )
@@ -16,8 +15,8 @@ const useGetMovementsList = (payload?: IGetMovementsListPayload) => {
   const [error, setError] = useState<string | null>(null);
   const [responseData, setResponseData] = useState<{
     currentPage: number,
-    prevPageUrl: string,
-    nextPageUrl: string,
+    prevPageUrl: string | null,
+    nextPageUrl: string | null,
     totalPages: number,
     total: number
     pageSize: number
@@ -202,9 +201,11 @@ export default function AdminViewMovements() {
       }}>
         <span>
           <button
-            disabled={responseData.currentPage === 1}
+            disabled={!responseData.prevPageUrl}
             onClick={async () => {
-              const movementsList = await request("GET", responseData.prevPageUrl)
+              const movementsList = await getAdminMovementsList({
+                currentPage: responseData.currentPage - 1,
+              });
               setMovements(movementsList.data)
               setResponseData({
                 currentPage: movementsList.currentPage,
@@ -223,8 +224,20 @@ export default function AdminViewMovements() {
           return (
             <span key={`movements-page-${idx}`}>
               <button onClick={async () => {
-                // const endpoint = `/movements/admin/all?page=${String(page + 1)}&limit=${responseData.pageSize}`
-              }}>
+                const movementsList = await getAdminMovementsList({
+                  currentPage: page + 1,
+                });
+                setMovements(movementsList.data);
+                setResponseData({
+                  currentPage: movementsList.currentPage,
+                  prevPageUrl: movementsList.prevPageUrl,
+                  nextPageUrl: movementsList.nextPageUrl,
+                  totalPages: movementsList.totalPages,
+                  total: movementsList.total,
+                  pageSize: movementsList.pageSize,
+                });
+              }}
+              >
                 {page + 1}
               </button>
             </span>
@@ -232,9 +245,11 @@ export default function AdminViewMovements() {
         })}
         <span>
           <button
-            disabled={responseData.currentPage === responseData.totalPages}
+            disabled={!responseData.nextPageUrl}
             onClick={async () => {
-              const movementsList = await request("GET", responseData.nextPageUrl)
+              const movementsList = await getAdminMovementsList({
+                currentPage: responseData.currentPage + 1,
+              });
               setMovements(movementsList.data)
               setResponseData({
                 currentPage: movementsList.currentPage,
@@ -244,7 +259,6 @@ export default function AdminViewMovements() {
                 total: movementsList.total,
                 pageSize: movementsList.pageSize
               })
-
             }}
           >{">"}</button>
         </span>
