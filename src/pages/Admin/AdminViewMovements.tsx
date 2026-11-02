@@ -160,7 +160,7 @@ export default function AdminViewMovements() {
                 console.log("HELLO WORLD")
                 navigate(`/admin/movements/${movement._id}/edit`)
               }}>
-                <td>{index + 1}</td>
+                <td>{(responseData.currentPage - 1) * responseData.pageSize + index + 1}</td>
                 <td>{movement.movementName}</td>
                 <td>{movement.movementExecution}</td>
                 <td>{movement.movementStatus}</td>
