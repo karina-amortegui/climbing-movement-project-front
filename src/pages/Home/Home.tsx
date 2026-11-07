@@ -22,7 +22,7 @@ const categoryCards = [
 ]
 
 // temporary manually selected MVP movement
-const featuredMovementId = "6a9f476fe0ffcbf3463ea026";
+// const featuredMovementId = "6a9f476fe0ffcbf3463ea026";
 
 
 /**

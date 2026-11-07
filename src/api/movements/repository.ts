@@ -12,7 +12,7 @@ export const getMovementsList = async () => {
 export interface IGetMovementsListPayload {
   currentPage?: number;
   nextOrPrev?: "next" | "prev";
-  queryBy?: string[];
+  queryBy?: object;
   orderBy?: string;
   order?: "ASC" | "DESC";
 }
@@ -22,7 +22,31 @@ export const getAdminMovementsList = async (
 ) => {
   const currentPage = payload?.currentPage ?? 1;
 
-  const endpoint = `/movements/admin/all?page=${currentPage}&limit=10`;
+  /**
+   * payload
+   * {
+   *  orderBy: "Movement"
+   * }
+   */
+
+  let endpoint = `/movements/admin/all?page=${currentPage}&limit=10`;
+
+  for (const key in payload) {
+    const typedKey = key as keyof typeof payload;
+    // payload["orderBy"] = "movement"
+    if (typedKey === "queryBy") {
+      /**
+       * {
+       *  movementExecution: "static"
+       * }
+       */
+      const entries = Object.entries(payload["queryBy"]!);
+      endpoint += `&${entries[0][0]}=${entries[0][1]}`;
+    } else {
+      endpoint += `&${key}=${payload[typedKey]}`;
+    }
+  }
+
   // const { currentPage = 1 } = payload;
 
   // const {
