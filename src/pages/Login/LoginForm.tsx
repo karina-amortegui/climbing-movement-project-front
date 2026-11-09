@@ -1,4 +1,5 @@
 import { useState, type SubmitEvent } from "react";
+import config from "../../config/config";
 
 type LoginFormProps = {
   onSuccess: () => void;
@@ -19,7 +20,7 @@ export const LoginForm = ({ onSuccess }: LoginFormProps) => {
     setErrorMessage("");
 
     try {
-      const response = await fetch("http://localhost:8787/login", {
+      const response = await fetch(`${config.serverUrl}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
