@@ -88,11 +88,6 @@ export default function AdminViewMovements() {
   const navigate = useNavigate();
   const { movements, setMovements, responseData, setResponseData, error } = useGetMovementsList();
 
-
-
-
-
-
   const TABLE_HEADERS = [
     {
       header: "Movement",
