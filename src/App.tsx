@@ -19,6 +19,7 @@ import AdminMenu from "./pages/Admin/AdminMenu";
 import AdminViewMovements from "./pages/Admin/AdminViewMovements";
 
 import { ReLoginModal } from "./pages/Login/ReLoginModal";
+import TOS from "./pages/TOS";
 
 export const App = () => {
   const [movementRefreshKey, setMovementRefreshKey] = useState(0);
@@ -68,6 +69,16 @@ export const App = () => {
                 }}
               />
             }
+          />
+          {/* add TOS */}
+          <Route
+            path="/tos"
+            element={
+              <TOS
+              />
+            }
+
+
           />
         </Route>
 

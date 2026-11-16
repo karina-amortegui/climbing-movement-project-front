@@ -20,6 +20,16 @@ export const MovementListCard = ({
   index
 }: MovementListCardProps) => {
 
+
+  const prodImg = (url: string) => {
+    if (url === "FIX ME") return url
+
+    // if(url.startsWith("http://localhost:8787"))
+
+    return url.replace("http://localhost:8787/static/images", "https://res.cloudinary.com/m5wjevku/image/upload/v1794276617")
+    // https://res.cloudinary.com/m5wjevku/image/upload/v1794276617/12_gejo_undercling.jpg
+  }
+
   return (
     <article className="movement-card">
       <div className="movement-card__visual" aria-hidden="true">
@@ -31,7 +41,10 @@ export const MovementListCard = ({
         <p className="movement-card__label">Movement</p>
         <h2>{movement.movementName}</h2>
         {/* temporary */}
-        <img src={movement.exampleImages[movement.exampleImages.length - 1]?.url ?? "FIX ME"}
+        <img src={
+          prodImg(
+            movement.exampleImages[movement.exampleImages.length - 1]?.url ?? "FIX ME"
+          )}
           style={{
             objectFit: "contain",
 

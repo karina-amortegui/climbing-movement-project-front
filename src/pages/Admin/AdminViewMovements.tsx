@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAdminMovementsList, setFeaturedMovement, type IGetMovementsListPayload } from "../../api/movements/repository";
+import { getAdminMovementsList, searchMovements, setFeaturedMovement, type IGetMovementsListPayload } from "../../api/movements/repository";
 import type { Movement } from "../../types/MovementTypes";
 import "./AdminViewMovement.css";
 
@@ -69,24 +69,42 @@ export default function AdminViewMovements() {
   // state
   const [featureSetLoading, setFeatureSetLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [searchKey, setSearchKey] = useState<string>("movementName")
 
   const debouncedSearchTerm = useDebounce(searchTerm)
 
-  useEffect(() => {
-    console.log("searchTerm =", debouncedSearchTerm);
-    // TODO: hook up search endpoint ->
-    /**
-     * 1. create api call in repository
-     * 2. import into this file and use api call when person is done typing
-     * 3. setMovements to results
-     * 4. add reset button to go back to all movements
-     */
-  }, [debouncedSearchTerm])
 
 
   // hooks
   const navigate = useNavigate();
   const { movements, setMovements, responseData, setResponseData, error } = useGetMovementsList();
+
+  useEffect(() => {
+    console.log("searchTerm =", debouncedSearchTerm);
+    // TODO: hook up search endpoint ->
+    /**
+     * 3. setMovements to results
+     * 4. add reset button to go back to all movements
+    */
+    // * 1. create api call in repository [X]
+
+    // * 2. import into this file and use api call when person is done typing [ ]
+    const searchMovementsCall = async () => {
+      console.log(searchTerm, searchKey)
+      const hits = await searchMovements(searchKey, searchTerm)
+      console.log(hits)
+      setMovements(hits.data)
+      setResponseData({
+        currentPage: hits.currentPage,
+        prevPageUrl: hits.prevPageUrl,
+        nextPageUrl: hits.nextPageUrl,
+        totalPages: hits.totalPages,
+        total: hits.total,
+        pageSize: hits.pageSize
+      })
+    }
+    searchMovementsCall();
+  }, [debouncedSearchTerm])
 
   const TABLE_HEADERS = [
     {
@@ -163,7 +181,9 @@ export default function AdminViewMovements() {
       </div>
       {/* filter section */}
       <div>
-        <select>
+        <select onChange={e => {
+          setSearchKey(e.target.value)
+        }}>
           <option>movementName</option>
           <option>other</option>
         </select>

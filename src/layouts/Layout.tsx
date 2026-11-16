@@ -75,6 +75,58 @@ export const Layout = ({ headerActions }: LayoutProps) => {
       <main className="site-main">
         <Outlet />
       </main>
+
+
+      <footer
+        style={{
+          width: "100%",
+          padding: "24px 16px",
+          marginTop: "auto",
+          borderTop: "1px solid #333",
+          textAlign: "center",
+          fontSize: "13px",
+          color: "#999",
+          boxSizing: "border-box",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: "12px",
+            marginBottom: "12px",
+          }}
+        >
+          <a
+            href="/tos"
+            style={{
+              color: "inherit",
+              textDecoration: "none",
+            }}
+          >
+            Terms of Service
+          </a>
+
+          <span aria-hidden="true">•</span>
+
+          <a
+            href="mailto:cruxaralabs@gmail.com"
+            style={{
+              color: "inherit",
+              textDecoration: "none",
+            }}
+          >
+            Contact Support
+          </a>
+        </div>
+
+        <p style={{ margin: 0 }}>
+          © {new Date().getFullYear()} Cruxara. All rights reserved.
+        </p>
+      </footer>
+
     </div>
 
   );

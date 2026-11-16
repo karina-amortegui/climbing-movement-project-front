@@ -93,3 +93,15 @@ export const setFeaturedMovement = async (id: string) => {
 // get movement by id ( switch request in useEffect in MovementForm with this )
 // export const getMovementById = async (id) => {
 // }
+
+export const searchMovements = async (
+  searchKey: string,
+  searchTerm: string,
+) => {
+  console.log("*", searchKey, searchTerm);
+  const response = await request(
+    "GET",
+    `/movements/search?searchKey=${searchKey}&searchTerm=${searchTerm}`,
+  );
+  return response;
+};
