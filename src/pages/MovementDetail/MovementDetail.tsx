@@ -121,7 +121,8 @@ export const MovementDetail = ({
           </div>
 
           <p className="movement-detail__eyebrow">Movement profile</p>
-          <h1>{movement.movementName}</h1>
+          {/* <h1>{movement.movementName}</h1> */}
+          <h1>{movement.displayName}</h1>
           <p className="movement-detail__summary">
             {movement.movementSummary}
           </p>

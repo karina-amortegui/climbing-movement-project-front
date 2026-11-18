@@ -29,6 +29,9 @@ export type MovementFormData = {
   movementResearchNotes: string;
   movementExtraNotes: string;
   exampleImages: ExampleImage[];
+  displayName: string;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 export type MovementFormSectionProps = {

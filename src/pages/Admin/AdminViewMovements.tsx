@@ -108,6 +108,10 @@ export default function AdminViewMovements() {
 
   const TABLE_HEADERS = [
     {
+      header: "Display",
+      keyName: "displayName"
+    },
+    {
       header: "Movement",
       keyName: "movementName"
     },
@@ -289,6 +293,7 @@ export default function AdminViewMovements() {
                   navigate(`/admin/movements/${movement._id}/edit`)
                 }}>
                   <td>{(responseData.currentPage - 1) * responseData.pageSize + index + 1}</td>
+                  <td>{movement.displayName}</td>
                   <td>{movement.movementName}</td>
                   <td>{movement.movementExecution}</td>
                   <td>{movement.movementStatus}</td>

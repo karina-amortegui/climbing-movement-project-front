@@ -11,6 +11,7 @@ type MovementListCardProps = {
 type MovementListCardData = {
   _id: string;
   movementName: string;
+  displayName: string;
   movementSummary: string;
   exampleImages: ExampleImage[];
 };
@@ -39,7 +40,8 @@ export const MovementListCard = ({
 
       <div className="movement-card__content">
         <p className="movement-card__label">Movement</p>
-        <h2>{movement.movementName}</h2>
+        {/* <h2>{movement.movementName}</h2> */}
+        <h2>{movement.displayName}</h2>
         {/* temporary */}
         <img src={
           prodImg(
